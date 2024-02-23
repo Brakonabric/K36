@@ -1,6 +1,9 @@
-# AI_K36 group
+## AI_K36 group
 
-Spēles apraksts:
+# Papildu prasības programmatūrai:
+Spēles sākumā cilvēks-spēlētājs izvēlas, ar kuru skaitli diapazonā no 5 līdz 15 sākt spēli. 
+
+# Spēles apraksts:
 Spēles sākumā ir dots cilvēka-spēlētāja izvēlētais skaitlis.
 Abiem spēlētājiem ir 0 punktu. Spēlētāji veic gājienus pēc kārtas, reizinot pašreizējā brīdī esošu skaitli ar 2 vai 3.
 Ja reizināšanas rezultātā tiek iegūts pāra skaitlis, tad spēlētāja punktu skaitam tiek pieskaitīts 1 punkts, bet ja nepāra skaitlis, tad 1 punkts tiek atņemts.
