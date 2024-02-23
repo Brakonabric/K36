@@ -1,6 +1,4 @@
-# ai_K36
-Ai team work
- 
+# AI_K36 group
 
 Spēles apraksts:
 Spēles sākumā ir dots cilvēka-spēlētāja izvēlētais skaitlis.
