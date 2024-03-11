@@ -16,7 +16,7 @@ root.resizable(width=False, height=False)   #   Aizslēgt primāra loga mērogo�
     #   bg = '<krāsa>',                 - Objekta krāsa.
     #   width = <skaits>,               - Objekta platums.
     #   height = <skaits>,              - Objekta augstums.
-rootHeader = Canvas(root, highlightthickness=0, bg='#5159a7', width=1200, height=40)
+rootHeader = Canvas(root, highlightthickness=0, bg='#5159a7', width=1200, height=40).place(x=0, y=0)
 rootPlotArea = Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=550)
 rootFooter = Canvas(root, highlightthickness=0, bg='#5159a7', width=1200, height=60)
 logBox = Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=40)
@@ -258,7 +258,7 @@ def openHelp():
         ttk.Canvas(helpWin, highlightthickness=0, bg='#647abc', width=560, height=20).place(x=10, y=30+step)
 
     #   Teksta objekts tika izveidots tādā pašā veidā kā 24. rindā.
-    ppHeaderText = ttk.Label(helpWin, text='PICK POINT', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    ppHeaderText = ttk.Label(helpWin, text='PICK POINT', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff').place(x=255, y=10)
     ppInfoText = ttk.Label(helpWin, text='Norādiet trajektorijas sākuma un beigu punktu, noklikšķinot uz ekrāna.', font=('arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
     spHeaderText = ttk.Label(helpWin, text='SET POINT', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
     spInfoText = ttk.Label(helpWin, text='Norādiet trajektorijas sākuma un beigu punktu x y koordinātas, noklikšķinot uz ekrāna.', font=('arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
@@ -271,7 +271,7 @@ def openHelp():
     helpOkButton = Button(helpWin, text="OK", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=78, relief='flat', command=helpWin.destroy)
 
     #   Objekts tika novietots tādā pašā veidā kā 33. rindā.
-    ppHeaderText.place(x=255, y=10)
+    ppHeaderText
     ppInfoText.place(x=80, y=30)
     spHeaderText.place(x=255, y=60)
     spInfoText.place(x=45, y=80)
