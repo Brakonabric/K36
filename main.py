@@ -41,19 +41,6 @@ def get_alg():
     return UseAlgorithm.current_alg()
 
 
-def check_rules():
-    player_state = get_player()
-    alg_state = get_alg()
-    if player_state is not None and alg_state is not None:
-        print(True)
-        print(player_state)
-        print(alg_state)
-    else:
-        print(False)
-        print(player_state)
-        print(alg_state)
-
-
 def about_main():
     def close_about():
         about_fake_button.destroy()
@@ -80,9 +67,30 @@ def about_preset():
     about_fake_button.place(x=-1.5, y=-1.5)
 
 
+def game_menu(window, turn, mode, start):
+    if turn == 'human':
+        background.create_image(0, 0, image=in_game_human_bg, anchor=NW)
+    else:
+        background.create_image(0, 0, image=in_game_ai_bg, anchor=NW)
+
+
 def preset_menu(window):
-    def to_game_menu():
-        print(window.winfo_screenwidth(), window)
+    def check_rules():
+        player_state = get_player()
+        alg_state = get_alg()
+        if player_state is not None and alg_state is not None:
+            start_button.destroy()
+            alg_button.destroy()
+            who_starts_button.destroy()
+            start_on = input_line.get()
+            input_box.destroy()
+            input_line.destroy()
+            about_button.destroy()
+            game_menu(window, player_state, alg_state, start_on)
+        else:
+            print(False)
+            print(player_state)
+            print(alg_state)
 
     start_button = Button(window, image=main_menu_start_img, border=0, command=check_rules)
     start_button.place(x=275, y=263)
@@ -91,7 +99,8 @@ def preset_menu(window):
     input_box = Canvas(window, width=100, height=50, highlightthickness=0)
     input_box.create_image(0, 0, image=preset_number_img, anchor=NW)
     input_box.place(x=350, y=350)
-    Entry(input_box, width=2, border=0, justify="center", font=('Terminal', 25, 'bold')).place(x=24, y=8)
+    input_line = Entry(input_box, width=2, border=0, justify="center", font=('Terminal', 25, 'bold'))
+    input_line.place(x=24, y=8)
     about_button = Button(window, image=main_menu_about_img, border=0, background='white',
                           activebackground='white', command=about_preset)
     about_button.place(x=375, y=485)
@@ -140,6 +149,8 @@ preset_alg_ab_img = PhotoImage(file='assets/preset/preset_alg_alpha_beta.png')
 preset_alg_mm_img = PhotoImage(file='assets/preset/preset_alg_minimax.png')
 preset_alg_hf_img = PhotoImage(file='assets/preset/preset_alg_hf.png')
 
+in_game_human_bg = PhotoImage(file='assets/game/game_human_background.png')
+in_game_ai_bg = PhotoImage(file='assets/game/game_computer_background.png')
 
 background = Canvas(root, width=800, height=600)
 
