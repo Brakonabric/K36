@@ -21,6 +21,6 @@ import keyboard
 # pseudo.run_algorithm()
 
 
-for i in range(10):
-    keyboard.wait("Enter")
+for i in range(200):
+    keyboard.wait("*")
     print(i)

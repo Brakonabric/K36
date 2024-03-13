@@ -7,7 +7,7 @@ from data.alg import UsingAlgorithm
 
 
 def button_click():
-    keyboard.press("Enter")
+    keyboard.send("*")
 
 
 def on_click_exit():
@@ -51,14 +51,16 @@ def about(mode):
 def game_menu(window, turn, mode, start):
     def finish(won):
         if won == "human":
+            button_click()
             print()
         elif won == "ai":
+            button_click()
             print()
         else:
             print()
-        info_bar.destroy()
-        x2_button.destroy()
-        x3_button.destroy()
+        # info_bar.destroy()
+        # x2_button.destroy()
+        # x3_button.destroy()
 
     if turn == 'human':
         background.create_image(0, 0, image=in_game_human_bg, anchor=NW)
