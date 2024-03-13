@@ -10,8 +10,6 @@ class UsingAlgorithm:
                 self._alg = "Alfa-beta"
             elif self._alg == "Alfa-beta":
                 self._alg = "Minimax"
-            elif self._alg == "Minimax":
-                self._alg = "Heuristic evaluation"
             else:
                 self._alg = "Alfa-beta"
 
