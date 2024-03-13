@@ -1,10 +1,13 @@
 from tkinter import *
+
+import keyboard
+
 from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
 
 
 def button_click():
-    print(+1)
+    keyboard.press("Enter")
 
 
 def on_click_exit():
