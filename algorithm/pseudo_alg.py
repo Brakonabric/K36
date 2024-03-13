@@ -22,5 +22,6 @@ import keyboard
 
 
 for i in range(200):
+    print("Обработал ход, твоя очередь, жду твоего хода")
     keyboard.wait("*")
-    print(i)
+    print("Получил данные о X3 или X2")
