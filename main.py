@@ -13,71 +13,69 @@ def on_click_exit():
 
 def change_player():
     FirstPlayer.change_player(False)
-    if get_player() == "human":
+    if FirstPlayer.current_player() == "human":
         who_starts_button.config(image=preset_human_img)
-    elif get_player() == "ai":
+    elif FirstPlayer.current_player() == "ai":
         who_starts_button.config(image=preset_ai_img)
     else:
         return
 
 
-def get_player():
-    return FirstPlayer.current_player()
-
-
 def change_alg():
     UseAlgorithm.change_alg(False)
-    if get_alg() == "Alfa-beta":
+    if UseAlgorithm.current_alg() == "Alfa-beta":
         alg_button.config(image=preset_alg_ab_img)
-    elif get_alg() == "Minimax":
+    elif UseAlgorithm.current_alg() == "Minimax":
         alg_button.config(image=preset_alg_mm_img)
-    elif get_alg() == "Heuristic evaluation":
+    elif UseAlgorithm.current_alg() == "Heuristic evaluation":
         alg_button.config(image=preset_alg_hf_img)
     else:
         return
 
 
-def get_alg():
-    return UseAlgorithm.current_alg()
-
-
-def about_main():
+def about(mode):
     def close_about():
         about_fake_button.destroy()
 
-    about_fake_button = Button(root,
-                               image=main_about_preview_img,
-                               width=800, height=600,
-                               command=close_about,
-                               border=0,
-                               relief='sunken')
-    about_fake_button.place(x=-1.5, y=-1.5)
-
-
-def about_preset():
-    def close_about():
-        about_fake_button.destroy()
-
-    about_fake_button = Button(root,
-                               image=main_about_preview_img,
-                               width=800, height=600,
-                               command=close_about,
-                               border=0,
-                               relief='sunken')
+    about_fake_button = Button(root, width=800, height=600, command=close_about, border=0, relief='sunken')
+    if mode == "main":
+        about_fake_button.config(image=main_about_preview_img)
+    else:
+        about_fake_button.config(image=main_about_preview_img)
     about_fake_button.place(x=-1.5, y=-1.5)
 
 
 def game_menu(window, turn, mode, start):
+    def finish(won):
+        if won == "human":
+            print()
+        elif won == "ai":
+            print()
+        else:
+            print()
+        info_bar.destroy()
+        x2_button.destroy()
+        x3_button.destroy()
+
     if turn == 'human':
         background.create_image(0, 0, image=in_game_human_bg, anchor=NW)
     else:
         background.create_image(0, 0, image=in_game_ai_bg, anchor=NW)
 
+    info_bar = Canvas(window, width=400, height=64, highlightthickness=0, border=0)
+    info_bar.create_image(0, 0, image=in_game_window, anchor=NW)
+    info_bar.place(x=200, y=264)
+
+    x3_button = Button(window, image=in_game_x3, border=0, command=lambda: finish("human"))
+    x3_button.place(x=412, y=349)
+    x2_button = Button(window, image=in_game_x2, border=0, command=lambda: finish("ai"))
+    x2_button.place(x=286, y=349)
+
 
 def preset_menu(window):
     def check_rules():
-        player_state = get_player()
-        alg_state = get_alg()
+        player_state = FirstPlayer.current_player()
+        alg_state = UseAlgorithm.current_alg()
         if player_state is not None and alg_state is not None:
             start_button.destroy()
             alg_button.destroy()
@@ -101,8 +99,8 @@ def preset_menu(window):
     input_box.place(x=350, y=350)
     input_line = Entry(input_box, width=2, border=0, justify="center", font=('Terminal', 25, 'bold'))
     input_line.place(x=24, y=8)
-    about_button = Button(window, image=main_menu_about_img, border=0, background='white',
-                          activebackground='white', command=about_preset)
+    about_button = Button(window, image=main_menu_about_img, border=0, background='white', activebackground='white',
+                          command=lambda: about("preset"))
     about_button.place(x=375, y=485)
 
 
@@ -119,8 +117,8 @@ def main_menu(window):
     start_button.place(x=275, y=263)
     exit_button = Button(window, image=main_menu_exit_img, border=0, command=on_click_exit)
     exit_button.place(x=300, y=350)
-    about_button = Button(window, image=main_menu_about_img, border=0, background='white',
-                          activebackground='white', command=about_main)
+    about_button = Button(window, image=main_menu_about_img, border=0, background='white', activebackground='white',
+                          command=lambda: about("main"))
     about_button.place(x=375, y=485)
 
 
@@ -151,11 +149,12 @@ preset_alg_hf_img = PhotoImage(file='assets/preset/preset_alg_hf.png')
 
 in_game_human_bg = PhotoImage(file='assets/game/game_human_background.png')
 in_game_ai_bg = PhotoImage(file='assets/game/game_computer_background.png')
+in_game_window = PhotoImage(file='assets/game/game_window.png')
+in_game_x3 = PhotoImage(file='assets/game/game_x3.png')
+in_game_x2 = PhotoImage(file='assets/game/game_x2.png')
 
 background = Canvas(root, width=800, height=600)
-
 background.pack()
-
 who_starts_button = Button(root, image=preset_who_starts_img, border=0, command=change_player)
 alg_button = Button(root, image=preset_algorithm_img, border=0, command=change_alg)
 
