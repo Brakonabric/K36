@@ -12,12 +12,12 @@ def on_click_exit():
     root.destroy()
 
 
-def about(mode):
+def about(src):
     def close_about():
         about_fake_button.destroy()
 
     about_fake_button = Button(root, width=800, height=600, command=close_about, border=0, relief='sunken')
-    if mode == "main":
+    if src == "main":
         about_fake_button.config(image=Assets.main_about_preview_img)
     else:
         about_fake_button.config(image=Assets.main_about_preview_img)
@@ -26,10 +26,13 @@ def about(mode):
 
 def game_menu(turn, mode, start):
     def finish(won):
+        human_score.destroy()
+        game_score.destroy()
+        ai_score.destroy()
         info_bar.destroy()
         x2_button.destroy()
         x3_button.destroy()
-        finish_menu(won)
+        finish_menu(won, 2, 1023, -1)
 
     if turn == 'human':
         background.create_image(0, 0, image=Assets.in_game_human_bg, anchor=NW)
@@ -38,24 +41,25 @@ def game_menu(turn, mode, start):
 
     info_bar = Canvas(root, width=400, height=64, highlightthickness=0, border=0)
     info_bar.create_image(0, 0, image=Assets.in_game_window, anchor=NW)
+
     info_bar.place(x=200, y=264)
 
-    # human_score = Label(text="1", font=('Terminal', 25, 'bold'))
-    # ai_score = Label(text="1", font=('Terminal', 20, 'bold'))
-    # game_score = Label(text="1", font=('Terminal', 25, 'bold'))
-    #
-    # human_score.place(x=100, y=265)
-    # ai_score.place(x=100, y=265)
-    # game_score.place(x=100, y=265)
+    human_score = Label(text="0", font=('Terminal', 23, 'bold'), justify="center", width=2, background="white")
+    game_score = Label(text="151", font=('Terminal', 23, 'bold'), justify="center", width=4, background="white")
+    ai_score = Label(text="0", font=('Terminal', 23, 'bold'), justify="center", width=2, background="white")
+
+    human_score.place(x=224, y=278)
+    game_score.place(x=350, y=278)
+    ai_score.place(x=520, y=278)
 
     x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: button_click(3))  # finish("human")
-    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: button_click(2))  # finish("ai")
+    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: finish("ai"))  # finish("ai")
 
     x3_button.place(x=412, y=349)
     x2_button.place(x=286, y=349)
 
 
-def finish_menu(mode):
+def finish_menu(mode, hum_sc, game_sc, ai_sc):
     def to_preset_menu():
         background.create_image(0, 0, image=Assets.preset_back_img, anchor=NW)
         start_again_button.destroy()
@@ -70,11 +74,17 @@ def finish_menu(mode):
         main_menu()
 
     if mode == "human":
-        background.create_image(0, 0, image=Assets.final_victory_bg_img, anchor=NW)
+        bg_img = Assets.final_victory_bg_img
     elif mode == "ai":
-        background.create_image(0, 0, image=Assets.final_defeat_bg_img, anchor=NW)
+        bg_img = Assets.final_defeat_bg_img
     else:
-        background.create_image(0, 0, image=Assets.final_draw_bg_img, anchor=NW)
+        bg_img = Assets.final_draw_bg_img
+
+    background.create_image(0, 0, image=bg_img, anchor=NW)
+    background.create_text(150, 288, text=f"{game_sc}", font=('Terminal', 23, 'bold'), justify="center",
+                           width=200, anchor=NW)
+    background.create_text(150, 363, text=f"{hum_sc} : {ai_sc}", font=('Terminal', 23, 'bold'), justify="center",
+                           width=200, anchor=NW)
 
     exit_button = Button(root, image=Assets.final_exit_img, border=0, command=lambda: on_click_exit())
     start_again_button = Button(root, image=Assets.final_start_img, border=0, command=lambda: to_preset_menu())
@@ -125,19 +135,22 @@ def preset_menu():
             return
 
     start_button = Button(root, image=Assets.main_menu_start_img, border=0, command=lambda: check_rules())
-    start_button.place(x=275, y=263)
     alg_button = Button(root, image=Assets.preset_algorithm_img, border=0, command=lambda: change_alg())
-    alg_button.place(x=502, y=352)
     who_starts_button = Button(root, image=Assets.preset_who_starts_img, border=0, command=lambda: change_player())
-    who_starts_button.place(x=150, y=352)
-    input_box = Canvas(root, width=100, height=50, highlightthickness=0)
-    input_box.create_image(0, 0, image=Assets.preset_number_img, anchor=NW)
-    input_box.place(x=350, y=350)
-    input_line = Entry(input_box, width=2, border=0, justify="center", font=('Terminal', 25, 'bold'))
-    input_line.place(x=24, y=8)
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
                           activebackground='white', command=lambda: about("preset"))
+
+    input_box = Canvas(root, width=100, height=50, highlightthickness=0)
+    input_box.create_image(0, 0, image=Assets.preset_number_img, anchor=NW)
+    input_line = Entry(input_box, width=2, border=0, justify="center", font=('Terminal', 25, 'bold'))
+
+    start_button.place(x=275, y=263)
+    alg_button.place(x=502, y=352)
+    who_starts_button.place(x=150, y=352)
     about_button.place(x=375, y=485)
+
+    input_box.place(x=350, y=350)
+    input_line.place(x=24, y=8)
 
 
 def main_menu():
@@ -150,20 +163,23 @@ def main_menu():
 
     background.create_image(0, 0, image=Assets.main_menu_bg_img, anchor=NW)
     start_button = Button(root, image=Assets.main_menu_start_img, border=0, command=lambda: to_preset_menu())
-    start_button.place(x=275, y=263)
     exit_button = Button(root, image=Assets.main_menu_exit_img, border=0, command=lambda: on_click_exit())
-    exit_button.place(x=300, y=350)
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
                           activebackground='white', command=lambda: about("main"))
+
+    start_button.place(x=275, y=263)
+    exit_button.place(x=300, y=350)
     about_button.place(x=375, y=485)
 
 
 # Main but not def
 root = Tk()
+root.wm_attributes('-transparentcolor', 'green')
 root.title('K36 GAMES')
 root.geometry('800x600')
 root.resizable(width=False, height=False)
 from data.assets import LoadAssets as Assets
+
 background = Canvas(root, width=800, height=600)
 background.pack()
 main_menu()
