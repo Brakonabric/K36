@@ -14,16 +14,16 @@ class UsingAlgorithm:
                 self._alg = "Alfa-beta"
 
     def current_alg(self):
-        return self.get_alg
-
-    @property
-    def alg(self):
         return self._alg
 
-    @alg.setter
-    def alg(self, value):
-        self._alg = value
-
-    @alg.getter
-    def get_alg(self):
-        return self._alg
+    # @property
+    # def alg(self):
+    #     return self._alg
+    #
+    # @alg.setter
+    # def alg(self, value):
+    #     self._alg = value
+    #
+    # @alg.getter
+    # def get_alg(self):
+    #     return self._alg

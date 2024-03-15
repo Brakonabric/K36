@@ -14,18 +14,18 @@ class WhoPlayFirst:
                 self._player = "human"
 
     def current_player(self):
-        return self.get_player
-
-    @property
-    def player(self):
         return self._player
 
-    @player.setter
-    def player(self, value):
-        self._player = value
-
-    @player.getter
-    def get_player(self):
-        return self._player
+    # @property
+    # def player(self):
+    #     return self._player
+    #
+    # @player.setter
+    # def player(self, value):
+    #     self._player = value
+    #
+    # @player.getter
+    # def player(self):
+    #     return self._player
 
 

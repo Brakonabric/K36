@@ -1,11 +1,7 @@
 from tkinter import *
-import keyboard
+from algorithm.play_game import Game
 from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
-
-
-def button_click(arg):
-    keyboard.send("*")
 
 
 def on_click_exit():
@@ -24,20 +20,67 @@ def about(src):
     about_fake_button.place(x=-1.5, y=-1.5)
 
 
-def game_menu(turn, mode, start):
-    def finish(won):
-        human_score.destroy()
-        game_score.destroy()
-        ai_score.destroy()
-        info_bar.destroy()
-        x2_button.destroy()
-        x3_button.destroy()
-        finish_menu(won, 2, 1023, -1)
+def game_menu(turn, mode, start_score):
+    play = Game(turn, mode, start_score, root)
 
-    if turn == 'human':
-        background.create_image(0, 0, image=Assets.in_game_human_bg, anchor=NW)
-    else:
-        background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
+    def play_game(mult):
+        def check_game_state():
+            if gm_sc >= 1000:
+                if hm_sc < ai_sc:
+                    finish_menu("human", hm_sc, gm_sc, ai_sc)
+                elif hm_sc > ai_sc:
+                    finish_menu("ai", hm_sc, gm_sc, ai_sc)
+                else:
+                    finish_menu("draw", hm_sc, gm_sc, ai_sc)
+                destroy()
+                return False
+            else:
+                print(hm_sc, gm_sc, ai_sc)
+                print("its okey")
+                return True
+
+        def update_game_stats():
+            human_score.config(text=f"{hm_sc}")
+            ai_score.config(text=f"{ai_sc}")
+            game_score.config(text=f"{gm_sc}")
+
+        def destroy():
+            human_score.destroy()
+            game_score.destroy()
+            ai_score.destroy()
+            info_bar.destroy()
+            x2_button.destroy()
+            x3_button.destroy()
+
+        if mult is None:
+            play.ai_turn()
+            gm_sc, hm_sc, ai_sc = play.get_data("ai")
+            update_game_stats()
+            background.create_image(0, 0, image=Assets.in_game_human_bg, anchor=NW)
+
+        else:
+            if turn == "human":
+                play.human_turn(mult)
+                gm_sc, hm_sc, ai_sc = play.get_data("human")
+                update_game_stats()
+                if check_game_state():
+                    ai_img = background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
+                    play.ai_turn()
+                    gm_sc, hm_sc, ai_sc = play.get_data("ai")
+                    update_game_stats()
+                    check_game_state()
+                    background.delete(ai_img)
+            else:
+                ai_img = background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
+                play.ai_turn()
+                gm_sc, hm_sc, ai_sc = play.get_data("ai")
+                update_game_stats()
+                background.delete(ai_img)
+                if check_game_state():
+                    play.human_turn(mult)
+                    gm_sc, hm_sc, ai_sc = play.get_data("human")
+                    update_game_stats()
+                    check_game_state()
 
     info_bar = Canvas(root, width=400, height=64, highlightthickness=0, border=0)
     info_bar.create_image(0, 0, image=Assets.in_game_window, anchor=NW)
@@ -45,20 +88,26 @@ def game_menu(turn, mode, start):
     info_bar.place(x=200, y=264)
 
     human_score = Label(text="0", font=('Terminal', 23, 'bold'), justify="center", width=2, background="white")
-    game_score = Label(text="151", font=('Terminal', 23, 'bold'), justify="center", width=4, background="white")
+    game_score = Label(text=f"{start_score}", font=('Terminal', 23, 'bold'), justify="center", width=4,
+                       background="white")
     ai_score = Label(text="0", font=('Terminal', 23, 'bold'), justify="center", width=2, background="white")
 
     human_score.place(x=224, y=278)
     game_score.place(x=350, y=278)
     ai_score.place(x=520, y=278)
 
-    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: button_click(3))  # finish("human")
-    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: finish("ai"))  # finish("ai")
+    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: play_game(3))  # finish("human")
+    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: play_game(2))  # finish("ai")
 
     x3_button.place(x=412, y=349)
     x2_button.place(x=286, y=349)
 
-    print(turn, mode, start)
+    if turn == 'human':
+        background.create_image(0, 0, image=Assets.in_game_human_bg, anchor=NW)
+    else:
+        background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
+        play_game(None)
+    print(turn, mode, start_score)
 
 
 def finish_menu(mode, hum_sc, game_sc, ai_sc):
