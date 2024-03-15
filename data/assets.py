@@ -8,11 +8,14 @@ class LoadAssets:
     main_menu_about_img = PhotoImage(file='assets/main/main_menu_about.png')
     main_about_preview_img = PhotoImage(file='assets/main/about_preview.png')
 
-    preset_back_img = PhotoImage(file='assets/preset/preset_background.png')
-    preset_number_img = PhotoImage(file='assets/preset/preset_number.png')
+    preset_back_img = PhotoImage(file='assets/preset/preset_background_1.png')
+    preset_number_img = PhotoImage(file='assets/preset/preset_number_1.png')
     preset_who_starts_img = PhotoImage(file='assets/preset/preset_who_starts.png')
     preset_human_img = PhotoImage(file='assets/preset/preset_who_starts_human.png')
     preset_ai_img = PhotoImage(file='assets/preset/preset_who_starts_ai.png')
+
+    preset_plus = PhotoImage(file='assets/preset/preset_number_plus.png')
+    preset_minus = PhotoImage(file='assets/preset/preset_number_minus.png')
 
     preset_algorithm_img = PhotoImage(file='assets/preset/preset_alg.png')
     preset_alg_ab_img = PhotoImage(file='assets/preset/preset_alg_alpha_beta.png')

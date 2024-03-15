@@ -58,6 +58,8 @@ def game_menu(turn, mode, start):
     x3_button.place(x=412, y=349)
     x2_button.place(x=286, y=349)
 
+    print(turn, mode, start)
+
 
 def finish_menu(mode, hum_sc, game_sc, ai_sc):
     def to_preset_menu():
@@ -98,6 +100,17 @@ def finish_menu(mode, hum_sc, game_sc, ai_sc):
 def preset_menu():
     first_player = WhoPlayFirst()
     used_algorithm = UsingAlgorithm()
+    start_num = 7
+
+    def modify(operator):
+        nonlocal start_num
+        if operator == '+':
+            if start_num < 15:
+                start_num += 1
+        else:
+            if start_num > 5:
+                start_num -= 1
+        start_on.config(text=f"{start_num}")
 
     def check_rules():
         player_state = first_player.current_player()
@@ -106,15 +119,14 @@ def preset_menu():
             start_button.destroy()
             alg_button.destroy()
             who_starts_button.destroy()
-            start_on = input_line.get()
             input_box.destroy()
-            input_line.destroy()
+            start_on.destroy()
+            plus_button.destroy()
+            minus_button.destroy()
             about_button.destroy()
-            game_menu(player_state, alg_state, start_on)
+            game_menu(player_state, alg_state, start_num)
         else:
-            print(False)
-            print(player_state)
-            print(alg_state)
+            pass
 
     def change_player():
         first_player.change_player(False)
@@ -139,18 +151,23 @@ def preset_menu():
     who_starts_button = Button(root, image=Assets.preset_who_starts_img, border=0, command=lambda: change_player())
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
                           activebackground='white', command=lambda: about("preset"))
+    plus_button = Button(root, image=Assets.preset_plus, border=0, command=lambda: modify('+'))
+    minus_button = Button(root, image=Assets.preset_minus, border=0, command=lambda: modify('-'))
 
-    input_box = Canvas(root, width=100, height=50, highlightthickness=0)
+    input_box = Canvas(root, width=76, height=50, highlightthickness=0)
     input_box.create_image(0, 0, image=Assets.preset_number_img, anchor=NW)
-    input_line = Entry(input_box, width=2, border=0, justify="center", font=('Terminal', 25, 'bold'))
+    start_on = Label(text=f"{start_num}", font=('Terminal', 23, 'bold'), justify="center", width=2, background="white")
 
     start_button.place(x=275, y=263)
-    alg_button.place(x=502, y=352)
-    who_starts_button.place(x=150, y=352)
+    alg_button.place(x=507, y=349)
+    who_starts_button.place(x=145, y=349)
     about_button.place(x=375, y=485)
+    input_box.place(x=362, y=350)
 
-    input_box.place(x=350, y=350)
-    input_line.place(x=24, y=8)
+    minus_button.place(x=303, y=349)
+    plus_button.place(x=445, y=349)
+
+    start_on.place(x=370, y=358)
 
 
 def main_menu():
