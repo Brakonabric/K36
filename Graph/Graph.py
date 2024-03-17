@@ -1,82 +1,127 @@
 from queue import Queue
 
-
+# Определение класса GraphNode
 class GraphNode:
-  # GraphNode constructor
+  # Конструктор класса GraphNode
   def __init__(self, id, number, level, p1_score, p2_score):
+    # Инициализация свойств узла
     self.id = id
     self.number = number
     self.level = level
     self.p1_score = p1_score
     self.p2_score = p2_score
-    self.ChildNodes = []  # List to store child nodes
+    self.ChildNodes = []  # Список для хранения дочерних узлов
+    self.hashValue = str(p1_score) + str(number) + str(p2_score)
 
+# Определение класса setNode
+class setNode:
+  def __init__(self, id, hashValue):
+    self.id = id
+    self.hashValue = hashValue   
 
+# Определение класса Graph
 class Graph:
-  # Graph constructor
+  # Конструктор класса Graph
   def __init__(self):
-    self.nodes = {}  # Dictionary to store nodes
+    self.nodeID = 0
+    self.nodes = {}  # Словарь для хранения узлов
+    self.levelSet = {
+      0:set()
+    }
 
-  # Method to delete all nodes from the graph
+  # Метод для генерации значения узла
+  def generateSetValue(self, Graphnode):
+    result = str(Graphnode.p1_score) + str(Graphnode.number) + str(Graphnode.p2_score)
+    return result
+
+  # Метод для удаления всех узлов из графа
   def deleteGraph(self):
     for key, value in self.nodes.items():
       del self.nodes[key]
 
-  # Method to add a node to the graph
-  def addNode(self, id, number, level, p1_score, p2_score):
-    # Adjust player scores based on node properties
-    if level % 2 != 0:
-      if number % 2 == 0:
-        p1_score += 1
-      else:
-        p1_score -= 1
-    else:
-      if number % 2 == 0:
-        p2_score += 1
-      else:
-        p2_score -= 1
-    # Create a new GraphNode and add it to the dictionary
-    self.nodes[id] = GraphNode(id, number, level, p1_score, p2_score)
+  # Метод для добавления узла в граф
+  def addNode(self, number, level, p1_score, p2_score, parentID):
+    found_existing_node = False
+    # Вычисление хэша узла
+    hashValue = str(p1_score) + str(number) + str(p2_score)
 
-  # Method to add an edge between two nodes in the graph
+    # Проверка наличия уровня в графе
+    if level not in self.levelSet:
+      self.levelSet[level] = set()
+    else:
+      # Проверка существующих узлов на совпадение хэша
+      for node in self.levelSet[level]:
+        if hashValue == node.hashValue:
+          exNodeID = node.id
+          found_existing_node = True
+          # Добавление ребра между узлами, если узел уже существует
+          self.addEdge(parentID, exNodeID)
+          return False
+          
+    # Если узел не найден, создаем новый
+    if not found_existing_node:  
+      # Вычисление очков игроков
+      if level % 2 != 0:
+        if number % 2 == 0:
+          p1_score += 1
+        else:
+          p1_score -= 1
+      else:
+        if number % 2 == 0:
+          p2_score += 1
+        else:
+          p2_score -= 1 
+
+      # Создание нового узла
+      self.nodeID += 1    
+      self.nodes[self.nodeID] = GraphNode(self.nodeID, number, level, p1_score, p2_score)
+      self.addEdge(parentID, self.nodeID)
+      # Добавление узла в множество уровня
+      self.levelSet[level].add(setNode(self.nodeID, self.generateSetValue(self.nodes[self.nodeID])))
+
+      return True
+
+  # Метод для добавления ребра между узлами в графе
   def addEdge(self, srcID, endID):
-    # Add endID node to the ChildNodes list of srcID node
+    # Добавление узла endID в список дочерних узлов узла srcID
     self.nodes[srcID].ChildNodes.append(self.nodes[endID])
 
-  # Method to print all nodes in the graph
+  # Метод для печати всех узлов в графе
   def printNodes(self):
     print("root")
-    # Iterate over nodes and print their properties and child nodes
+    # Перебор узлов и печать их свойств и дочерних узлов
     for key, value in self.nodes.items():
       print("(", value.p1_score, value.number, value.p2_score, ")")
       for nodes in value.ChildNodes:
         print("(", nodes.p1_score, nodes.number, nodes.p2_score, ")", end=" ")
       print("")
 
-  # Method to generate the graph starting from a given number
+  # Метод для печати уровней графа
+  def printLevels(self):
+    for key, value in self.levelSet.items():
+      for node in value:
+        print("(", node.hashValue, ")", end = "")
+      print(" ")
+
+  # Метод для генерации графа, начиная с заданного числа
   def generateGraph(self, startNum):
     maxNum = 1000
-    nodeID = 0
-    # Create the root node and add it to the queue
-    self.nodes[nodeID] = GraphNode(nodeID, startNum, 0, 0, 0)
-    nQueue = Queue()
-    nQueue.put(self.nodes[nodeID])
+    # Создание корневого узла и добавление его в очередь
+    self.nodes[self.nodeID] = GraphNode(self.nodeID, startNum, 0, 0, 0)
+    self.levelSet[0].add(setNode(self.nodes[0].id, self.generateSetValue(self.nodes[0])))
 
-    # Iterate until the queue is empty
+    nQueue = Queue()
+    nQueue.put(self.nodes[self.nodeID])
+
+    # Итерация, пока очередь не пуста
     while not nQueue.empty():
       currNode = nQueue.get()
-      # If the current node's number is less than maxNum, generate child nodes
+      # Если число текущего узла меньше максимального числа, генерируем дочерние узлы
       if currNode.number < maxNum:
-        # Generate child nodes with different properties
-        self.addNode(nodeID + 1, currNode.number * 2, currNode.level + 1,
-                     currNode.p1_score, currNode.p2_score)
-        nQueue.put(self.nodes[nodeID + 1])
+        # Генерация дочерних узлов с разными свойствами
+        if self.addNode(currNode.number * 2, currNode.level + 1, currNode.p1_score, currNode.p2_score, currNode.id):
+          nQueue.put(self.nodes[self.nodeID])
 
-        self.addNode(nodeID + 2, currNode.number * 3, currNode.level + 1,
-                     currNode.p1_score, currNode.p2_score)
-        nQueue.put(self.nodes[nodeID + 2])
+        if self.addNode(currNode.number * 3, currNode.level + 1, currNode.p1_score, currNode.p2_score, currNode.id):
+          nQueue.put(self.nodes[self.nodeID])
 
-        # Add edges between the current node and its child nodes
-        self.addEdge(currNode.id, nodeID + 1)
-        self.addEdge(currNode.id, nodeID + 2)
-        nodeID += 2  # Increment nodeID for the next pair of child nodes
