@@ -240,7 +240,6 @@ def main_menu():
 
 # Main but not def
 root = Tk()
-root.wm_attributes('-transparentcolor', 'green')
 root.title('K36 GAMES')
 root.geometry('800x600')
 root.resizable(width=False, height=False)
