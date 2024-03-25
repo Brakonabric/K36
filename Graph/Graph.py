@@ -1,127 +1,158 @@
+
+
 from queue import Queue
 
-# Определение класса GraphNode
+
 class GraphNode:
-  # Конструктор класса GraphNode
+  # GraphNode constructor
   def __init__(self, id, number, level, p1_score, p2_score):
-    # Инициализация свойств узла
     self.id = id
     self.number = number
     self.level = level
     self.p1_score = p1_score
     self.p2_score = p2_score
-    self.ChildNodes = []  # Список для хранения дочерних узлов
+    self.ChildNodes = []  # List to store child nodes
     self.hashValue = str(p1_score) + str(number) + str(p2_score)
+    self.eval = 2
 
-# Определение класса setNode
+
 class setNode:
   def __init__(self, id, hashValue):
     self.id = id
-    self.hashValue = hashValue   
+    self.hashValue = hashValue
 
-# Определение класса Graph
+
 class Graph:
-  # Конструктор класса Graph
+  # Graph constructor
   def __init__(self):
     self.nodeID = 0
-    self.nodes = {}  # Словарь для хранения узлов
+    self.nodes = {}  # Dictionary to store nodes
     self.levelSet = {
-      0:set()
+      0: set()
     }
 
-  # Метод для генерации значения узла
   def generateSetValue(self, Graphnode):
     result = str(Graphnode.p1_score) + str(Graphnode.number) + str(Graphnode.p2_score)
     return result
 
-  # Метод для удаления всех узлов из графа
+  # Method to delete all nodes from the graph
   def deleteGraph(self):
     for key, value in self.nodes.items():
       del self.nodes[key]
 
-  # Метод для добавления узла в граф
+  # Method to add a node to the graph
+
   def addNode(self, number, level, p1_score, p2_score, parentID):
     found_existing_node = False
-    # Вычисление хэша узла
+    if level % 2 != 0:
+      if number % 2 == 0:
+        p1_score += 1
+      else:
+        p1_score -= 1
+    else:
+      if number % 2 == 0:
+        p2_score += 1
+      else:
+        p2_score -= 1
     hashValue = str(p1_score) + str(number) + str(p2_score)
 
-    # Проверка наличия уровня в графе
     if level not in self.levelSet:
       self.levelSet[level] = set()
     else:
-      # Проверка существующих узлов на совпадение хэша
       for node in self.levelSet[level]:
         if hashValue == node.hashValue:
           exNodeID = node.id
           found_existing_node = True
-          # Добавление ребра между узлами, если узел уже существует
           self.addEdge(parentID, exNodeID)
           return False
-          
-    # Если узел не найден, создаем новый
-    if not found_existing_node:  
-      # Вычисление очков игроков
-      if level % 2 != 0:
-        if number % 2 == 0:
-          p1_score += 1
-        else:
-          p1_score -= 1
-      else:
-        if number % 2 == 0:
-          p2_score += 1
-        else:
-          p2_score -= 1 
 
-      # Создание нового узла
-      self.nodeID += 1    
+    if not found_existing_node:
+      self.nodeID += 1
       self.nodes[self.nodeID] = GraphNode(self.nodeID, number, level, p1_score, p2_score)
       self.addEdge(parentID, self.nodeID)
-      # Добавление узла в множество уровня
       self.levelSet[level].add(setNode(self.nodeID, self.generateSetValue(self.nodes[self.nodeID])))
 
       return True
 
-  # Метод для добавления ребра между узлами в графе
+  # Method to add an edge between two nodes in the graph
   def addEdge(self, srcID, endID):
-    # Добавление узла endID в список дочерних узлов узла srcID
+    # Add endID node to the ChildNodes list of srcID node
     self.nodes[srcID].ChildNodes.append(self.nodes[endID])
 
-  # Метод для печати всех узлов в графе
+  # Method to print all nodes in the graph
   def printNodes(self):
     print("root")
-    # Перебор узлов и печать их свойств и дочерних узлов
+    # Iterate over nodes and print their properties and child nodes
     for key, value in self.nodes.items():
-      print("(", value.p1_score, value.number, value.p2_score, ")")
+      print("(", value.id, " ", value.p1_score, value.number, value.p2_score, value.eval, ")")
       for nodes in value.ChildNodes:
-        print("(", nodes.p1_score, nodes.number, nodes.p2_score, ")", end=" ")
+        print("(", nodes.id, " ", nodes.p1_score, nodes.number, nodes.p2_score, nodes.eval, ")", end=" ")
+      print("")
       print("")
 
-  # Метод для печати уровней графа
-  def printLevels(self):
-    for key, value in self.levelSet.items():
-      for node in value:
-        print("(", node.hashValue, ")", end = "")
-      print(" ")
-
-  # Метод для генерации графа, начиная с заданного числа
+  # Method to generate the graph starting from a given number
   def generateGraph(self, startNum):
     maxNum = 1000
-    # Создание корневого узла и добавление его в очередь
+    # Create the root node and add it to the queue
     self.nodes[self.nodeID] = GraphNode(self.nodeID, startNum, 0, 0, 0)
     self.levelSet[0].add(setNode(self.nodes[0].id, self.generateSetValue(self.nodes[0])))
 
     nQueue = Queue()
     nQueue.put(self.nodes[self.nodeID])
 
-    # Итерация, пока очередь не пуста
+    # Iterate until the queue is empty
     while not nQueue.empty():
       currNode = nQueue.get()
-      # Если число текущего узла меньше максимального числа, генерируем дочерние узлы
+      # If the current node's number is less than maxNum, generate child nodes
       if currNode.number < maxNum:
-        # Генерация дочерних узлов с разными свойствами
+        # Generate child nodes with different properties
+
         if self.addNode(currNode.number * 2, currNode.level + 1, currNode.p1_score, currNode.p2_score, currNode.id):
           nQueue.put(self.nodes[self.nodeID])
 
         if self.addNode(currNode.number * 3, currNode.level + 1, currNode.p1_score, currNode.p2_score, currNode.id):
           nQueue.put(self.nodes[self.nodeID])
 
+  def printLevels(self):
+    for key, value in self.levelSet.items():
+      for node in value:
+        print("(", node.hashValue, ")", end="")
+      print("////////////////////////////////")
+
+  def startEval(self):
+    for key, value in self.nodes.items():
+      if not value.ChildNodes:
+        if value.p1_score > value.p2_score:
+          value.eval = -1
+        elif value.p1_score == value.p2_score:
+          value.eval = 0
+        else:
+          value.eval = 1
+
+  def minimaxEval(self, node):
+    if not node.ChildNodes:
+      return node.eval
+
+    if node.level % 2 == 1:
+      maxEval = float('-inf')
+      for child_node in node.ChildNodes:
+        child_node.eval = self.minimaxEval(child_node)
+        maxEval = max(maxEval, child_node.eval)
+      node.eval = maxEval
+      return maxEval
+    else:
+      minEval = float('inf')
+      for child_node in node.ChildNodes:
+        child_node.eval = self.minimaxEval(child_node)
+        minEval = min(minEval, child_node.eval)
+      node.eval = minEval
+      return minEval
+
+
+
+graph = Graph()
+graph.generateGraph(15)
+graph.startEval()
+graph.minimaxEval(graph.nodes[0])
+graph.printNodes()
+# graph.printLevels()
