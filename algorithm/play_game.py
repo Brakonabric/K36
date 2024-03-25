@@ -43,6 +43,6 @@ class Game:
 
     def ai_turn(self):
         self.root.update()
-        time.sleep(2)
+        time.sleep(0.5)
         self._current_ai_mult = random.randint(2, 3)
         print(f"    AI: X{self._current_ai_mult}")

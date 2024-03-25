@@ -6,10 +6,9 @@ class LoadAssets:
     main_menu_start_img = PhotoImage(file='assets/main/main_menu_start.png')
     main_menu_exit_img = PhotoImage(file='assets/main/main_menu_exit.png')
     main_menu_about_img = PhotoImage(file='assets/main/main_menu_about.png')
-    main_about_preview_img = PhotoImage(file='assets/main/about_preview.png')
 
-    preset_back_img = PhotoImage(file='assets/preset/preset_background_1.png')
-    preset_number_img = PhotoImage(file='assets/preset/preset_number_1.png')
+    preset_back_img = PhotoImage(file='assets/preset/preset_background.png')
+    preset_number_img = PhotoImage(file='assets/preset/preset_number.png')
     preset_who_starts_img = PhotoImage(file='assets/preset/preset_who_starts.png')
     preset_human_img = PhotoImage(file='assets/preset/preset_who_starts_human.png')
     preset_ai_img = PhotoImage(file='assets/preset/preset_who_starts_ai.png')
@@ -34,3 +33,6 @@ class LoadAssets:
     final_menu_img = PhotoImage(file='assets/final/final_menu.png')
     final_start_img = PhotoImage(file='assets/final/final_start_again.png')
     final_exit_img = PhotoImage(file='assets/final/final_exit.png')
+
+    about_game_img = PhotoImage(file='assets/about_game.png')
+    about_rule_img = PhotoImage(file='assets/about_rule.png')

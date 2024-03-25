@@ -23,10 +23,10 @@ def about(src):
     # Проверка источника вызова функции
     if src == "main":
         # Если источник главное меню, установить изображения "О программе"
-        about_fake_button.config(image=Assets.main_about_preview_img)
+        about_fake_button.config(image=Assets.about_game_img)
     else:
         # Если источник меню настройки игры, установить изображения "Правила игры"
-        about_fake_button.config(image=Assets.main_about_preview_img)
+        about_fake_button.config(image=Assets.about_rule_img)
 
     # Размещение полноэкранной кнопки на экране
     about_fake_button.place(x=-1.5, y=-1.5)
