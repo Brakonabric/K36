@@ -12,10 +12,15 @@ class Game:
         self._current_human_mult = None
         self._human_score = 0
         self._ai_score = 0
+        self._iter = 0
+
+    def get_iter(self):
+        self._iter += 1
+        return self._iter
 
     def human_turn(self, value):
         self._current_human_mult = value
-        print(f"HUMAN:{self._current_human_mult}")
+        print(f"    HUMAN:{self._current_human_mult}")
 
     def get_data(self, whose_turn):
         if whose_turn == "human":
@@ -25,18 +30,21 @@ class Game:
             else:
                 self._human_score -= 1
         elif whose_turn == "ai":
-            self.game_score = self.game_score * self._current_ai_mult
-            if self.game_score % 2 == 0:
-                self._ai_score += 1
-            else:
-                self._ai_score -= 1
+            # ВЫЗОВ класса для получения объекта вершины
+            self.game_score = self.game_score * self._current_ai_mult # = счёт игры из вершины
+            if self.game_score % 2 == 0: # УДАЛИТЬ ИФ
+                self._ai_score += 1      # УДАЛИТЬ ИФ
+            else:                        # УДАЛИТЬ ИФ
+                self._ai_score -= 1 # = счёт ИИ из вершины
+
+        print(f"    DATA: {self.game_score}")
         return self.game_score, self._human_score, self._ai_score
 
     def ai_turn(self):
         self.root.update()
         time.sleep(1)
         self._current_ai_mult = random.randint(2, 3)
-        print(f"AI:{self._current_ai_mult}")
+        print(f"    AI:{self._current_ai_mult}")
 
 # def play_game(num, player, alg, humanScore, compScore):
 #     if player == "human":

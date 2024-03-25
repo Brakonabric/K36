@@ -34,30 +34,44 @@ def about(src):
 
 # Функция отображения окна игры
 def game_menu(turn, mode, start_score):
+    # Вызов класса обработки данных с переменными кто начинает, какой алгоритм использовать, с какого числа начинается игра, коренное окно для корректного отображения GUI
     play = Game(turn, mode, start_score, root)
 
+    # Внутренняя функция для обработки действий игрока и ИИ
     def play_game(mult):
+        print(f"ROUND NUMBER: {play.get_iter()}")
+
+        # Внутренняя функция для обновления статуса игры
         def check_game_state():
+            # Проверка статуса игры, если очки выше 1000 пунктов
             if gm_sc >= 1000:
+                # Если у игрока меньше очков, чем у ИИ:
                 if hm_sc < ai_sc:
+                    # Закончить игру в пользу игрока
                     finish_menu("human", hm_sc, gm_sc, ai_sc)
+                # Если у ИИ меньше очков, чем у игрока:
                 elif hm_sc > ai_sc:
+                    # Закончить игру в пользу ИИ
                     finish_menu("ai", hm_sc, gm_sc, ai_sc)
+                # Если у игрока и ИИ одинаковое кол-во очков:
                 else:
+                    # Закончить игру в качестве ничьей
                     finish_menu("draw", hm_sc, gm_sc, ai_sc)
+                # Вызвать функцию уничтожения элементов окна игры
                 destroy()
                 return False
             else:
-                print(hm_sc, gm_sc, ai_sc)
-                print("its okay")
                 return True
 
+        # Внутренняя функция для обновления счета в окне интерфейса
         def update_game_stats():
             human_score.config(text=f"{hm_sc}")
             ai_score.config(text=f"{ai_sc}")
             game_score.config(text=f"{gm_sc}")
 
+        # Внутренняя функция уничтожения элементов окна игры
         def destroy():
+            # Удаление текста, кнопок и других элементов окна игры используя .destroy()
             human_score.destroy()
             game_score.destroy()
             ai_score.destroy()
@@ -65,60 +79,102 @@ def game_menu(turn, mode, start_score):
             x2_button.destroy()
             x3_button.destroy()
 
+        # При вызове функции play_game, когда первым ходит ИИ, мультипликатор игрока (3 или 2) будет None,
+        # поэтому происходит проверка для установки корректного порядка ходов.
+        # Если первым ходит ИИ, данные о его ходе должны поступить раньше, чем у игрока будет возможность сделать свой ход.
         if mult is None:
+            # Сделать ход за ИИ
             play.ai_turn()
+            # Получение обновленных данных статуса игры
             gm_sc, hm_sc, ai_sc = play.get_data("ai")
+            # Вызов функции обновления данных игры в окне интерфейса
             update_game_stats()
+            # Изменение фона игры на фон хода игрока
             background.create_image(0, 0, image=Assets.in_game_human_bg, anchor=NW)
+            while mult is None:
+                root.update()
 
         else:
+
+            # Если ходит игрок, мультипликатор игрока будет равен 3 или 2
             if turn == "human":
+                # Вызов класса игры с аргументов в качестве мультипликатора игрока
                 play.human_turn(mult)
+                # Получение обновленных данных статуса игры
                 gm_sc, hm_sc, ai_sc = play.get_data("human")
+                # Вызов функции обновления данных игры в окне интерфейса
                 update_game_stats()
+                # Проверка условий игры, если счёт меньше 1000, игра продолжается
                 if check_game_state():
+                    # Фон окна меняется на фон хода ИИ
                     ai_img = background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
+                    # Вызов класса игры для получения данных хода ИИ
                     play.ai_turn()
+                    # Получение обновленных данных статуса игры
                     gm_sc, hm_sc, ai_sc = play.get_data("ai")
+                    # Вызов функции обновления данных игры в окне интерфейса
                     update_game_stats()
+                    # Проверка условий игры, если, после хода ИИ, счёт игры меньше 1000, игра переходит на следующую итерацию
                     check_game_state()
+                    # Удаление изображения фона хода ИИ
                     background.delete(ai_img)
             else:
+                # Если ходит ИИ изменить изображение фона на фон хода ИИ
                 ai_img = background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
+                # Вызов класса игры для получения данных хода ИИ
                 play.ai_turn()
+                # Получение обновленных данных статуса игры
                 gm_sc, hm_sc, ai_sc = play.get_data("ai")
+                # Вызов функции обновления данных игры в окне интерфейса
                 update_game_stats()
+                # Удаление изображения фона хода ИИ
                 background.delete(ai_img)
+                # Проверка условий игры, если счёт меньше 1000, игра продолжается
                 if check_game_state():
+                    # Вызов класса игры с аргументов в качестве мультипликатора игрока
                     play.human_turn(mult)
+                    # Получение обновленных данных статуса игры
                     gm_sc, hm_sc, ai_sc = play.get_data("human")
+                    # Вызов функции обновления данных игры в окне интерфейса
                     update_game_stats()
+                    # Проверка условий игры, если, после хода игрока, счёт игры меньше 1000, игра переходит на следующую итерацию
                     check_game_state()
 
+    # Создание элемента дизайна, поверх которого размещается счёта участников игры
     info_bar = Canvas(root, width=400, height=64, highlightthickness=0, border=0)
     info_bar.create_image(0, 0, image=Assets.in_game_window, anchor=NW)
 
+    # Размещение элемента в окне
     info_bar.place(x=200, y=264)
 
+    # Создание текстовых элементов, который будет отображать счёт участников игры
     human_score = Label(text="0", font=('Terminal', 23, 'bold'), justify="center", width=2, background="white")
     game_score = Label(text=f"{start_score}", font=('Terminal', 23, 'bold'), justify="center", width=4,
                        background="white")
     ai_score = Label(text="0", font=('Terminal', 23, 'bold'), justify="center", width=2, background="white")
 
+    # Размещение текстовых элементов в окне.
     human_score.place(x=224, y=278)
     game_score.place(x=350, y=278)
     ai_score.place(x=520, y=278)
 
-    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: play_game(3))  # finish("human")
-    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: play_game(2))  # finish("ai")
+    # Создание кнопок вызова функции игры, функция вызывается с аргументов в качестве мультипликатора игрока 3 или 2
+    # Если игрок ходит первым, первый вызов функции определит корректный порядок хода игры
+    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: play_game(3))
+    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: play_game(2))
 
+    # Размещение кнопок в окне
     x3_button.place(x=412, y=349)
     x2_button.place(x=286, y=349)
 
+    # Проверка кто ходит первым:
     if turn == 'human':
+        # Установка фона окна на фон хода игрока
         background.create_image(0, 0, image=Assets.in_game_human_bg, anchor=NW)
     else:
+        # Установка фона окна на фон хода ИИ
         background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
+        # Вызов функции игры, с аргументом None, для правильного определения порядка ходов
         play_game(None)
     print(turn, mode, start_score)
 
@@ -269,7 +325,7 @@ def main_menu():
         about_button.destroy()
         # Вызов функции для отображения меню выбора настройки
         preset_menu()
-    
+
     # Создание фонового изображения главного меню используя метод .create_image(привязка, источник)
     background.create_image(0, 0, image=Assets.main_menu_bg_img, anchor=NW)
 
