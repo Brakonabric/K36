@@ -2,7 +2,8 @@ from tkinter import *
 from algorithm.play_game import Game
 from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
-
+titleColor = '\x1b[38;5;40m'
+defaultColor = '\033[0m'
 
 # Функция закрытия приложения
 def on_click_exit():
@@ -34,7 +35,7 @@ def about(src):
 
 # Функция отображения окна игры
 def game_menu(turn, mode, start_score):
-    print(f"[ START: {turn} | ALG: {mode} | SCORE: {start_score} ]")
+    print(f"{titleColor}[ START: {turn} | ALG: {mode} | SCORE: {start_score} ]{defaultColor}")
     # Вызов класса обработки данных с переменными кто начинает, какой алгоритм использовать, с какого числа начинается игра, коренное окно для корректного отображения GUI
     play = Game(turn, mode, start_score, root)
 
@@ -198,13 +199,13 @@ def finish_menu(turn, hum_sc, game_sc, ai_sc):
     # Определение фонового изображения в зависимости от исхода игры
     if turn == "human":
         bg_img = Assets.final_victory_bg_img
-        print(f"[ WIN: {turn} | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]")
+        print(f"{titleColor}[ WIN: {turn} | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]{defaultColor}")
     elif turn == "ai":
         bg_img = Assets.final_defeat_bg_img
-        print(f"[ WIN: {turn} | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]")
+        print(f"{titleColor}[ WIN: {turn} | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]{defaultColor}")
     else:
         bg_img = Assets.final_draw_bg_img
-        print(f"[ WIN: DRAW | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]")
+        print(f"{titleColor}[ WIN: DRAW | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]{defaultColor}")
     print("")
 
     # Установка фонового изображения и текстовых элементов для отображения результатов игры

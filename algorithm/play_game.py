@@ -1,6 +1,8 @@
 import time
 from Graph.partial_graph import minimax, alphabeta
 
+defaultColor = '\033[0m'
+timeColor = '\x1b[38;5;181m'
 
 class Game:
     def __init__(self, turn, alg, score, root):
@@ -24,29 +26,28 @@ class Game:
                 self._human_score += 1
             else:
                 self._human_score -= 1
-
-        print(f"        DATA: {before} -> {self.game_score}")
+            print(f"        DATA: {before} -> {self.game_score}")
         return self.game_score, self._human_score, self._ai_score
 
     def ai_turn(self):
+        old_score = self.game_score
         self.root.update()
         # Алгоритм работает слишком быстро,
         # поэтому перед его выполнением мы делаем задержку в пол секунды,
         # чтобы GUI успел отобразить счёт игры перед ходом ИИ
         # time.sleep(0.6)
-        old_score = self.game_score
         result = None
         if self.play_now == "human":
             if self.alg == "Minimax":
                 start_time = time.perf_counter()
                 result = minimax(self.game_score, self._human_score, self._ai_score)
                 end_time = time.perf_counter()
-                print(f"    Minimax time: {(end_time - start_time) * 1000} ms")
+                print(f"{timeColor}Minimax time: {(end_time - start_time) * 1000} ms{defaultColor}")
             elif self.alg == "Alfa-beta":
                 start_time = time.perf_counter()
                 result = alphabeta(self.game_score, self._human_score, self._ai_score)
                 end_time = time.perf_counter()
-                print(f"    AlphaBeta time: {(end_time - start_time) * 1000} ms")
+                print(f"{timeColor}AlphaBeta time: {(end_time - start_time) * 1000} ms{defaultColor}")
 
             self.game_score = result.number
             self._human_score = result.p1_score
@@ -56,12 +57,12 @@ class Game:
                 start_time = time.perf_counter()
                 result = minimax(self.game_score, self._ai_score, self._human_score)
                 end_time = time.perf_counter()
-                print(f"    Minimax time: {(end_time - start_time) * 1000} ms")
+                print(f"{timeColor}Minimax time: {(end_time - start_time) * 1000} ms{defaultColor}")
             elif self.alg == "Alfa-beta":
                 start_time = time.perf_counter()
                 result = alphabeta(self.game_score, self._ai_score, self._human_score)
                 end_time = time.perf_counter()
-                print(f"    AlphaBeta time: {(end_time - start_time) * 1000} ms")
+                print(f"{timeColor}AlphaBeta time: {(end_time - start_time) * 1000} ms{defaultColor}")
 
             self.game_score = result.number
             self._human_score = result.p2_score
@@ -70,3 +71,4 @@ class Game:
 
         ai_mult = int(self.game_score / old_score)
         print(f"    AI: X{ai_mult}")
+        print(f"        DATA: {old_score} -> {self.game_score}")
