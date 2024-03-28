@@ -1,5 +1,5 @@
-import random
 import time
+from Graph.partial_graph import minimax, alphabeta
 
 
 class Game:
@@ -8,15 +8,9 @@ class Game:
         self.game_score = score
         self.play_now = turn
         self.alg = alg
-        self._current_ai_mult = 3
         self._current_human_mult = None
         self._human_score = 0
         self._ai_score = 0
-        self._iter = 0
-
-    def get_iter(self):
-        self._iter += 1
-        return self._iter
 
     def human_turn(self, value):
         self._current_human_mult = value
@@ -30,19 +24,49 @@ class Game:
                 self._human_score += 1
             else:
                 self._human_score -= 1
-        elif whose_turn == "ai":
-            # ВЫЗОВ класса для получения объекта вершины
-            self.game_score = self.game_score * self._current_ai_mult # = счёт игры из вершины
-            if self.game_score % 2 == 0: # УДАЛИТЬ ИФ
-                self._ai_score += 1      # УДАЛИТЬ ИФ
-            else:                        # УДАЛИТЬ ИФ
-                self._ai_score -= 1 # = счёт ИИ из вершины
 
         print(f"        DATA: {before} -> {self.game_score}")
         return self.game_score, self._human_score, self._ai_score
 
     def ai_turn(self):
         self.root.update()
-        time.sleep(0.5)
-        self._current_ai_mult = random.randint(2, 3)
-        print(f"    AI: X{self._current_ai_mult}")
+        # Алгоритм работает слишком быстро,
+        # поэтому перед его выполнением мы делаем задержку в пол секунды,
+        # чтобы GUI успел отобразить счёт игры перед ходом ИИ
+        # time.sleep(0.6)
+        old_score = self.game_score
+        result = None
+        if self.play_now == "human":
+            if self.alg == "Minimax":
+                start_time = time.perf_counter()
+                result = minimax(self.game_score, self._human_score, self._ai_score)
+                end_time = time.perf_counter()
+                print(f"    Minimax time: {(end_time - start_time) * 1000} ms")
+            elif self.alg == "Alfa-beta":
+                start_time = time.perf_counter()
+                result = alphabeta(self.game_score, self._human_score, self._ai_score)
+                end_time = time.perf_counter()
+                print(f"    AlphaBeta time: {(end_time - start_time) * 1000} ms")
+
+            self.game_score = result.number
+            self._human_score = result.p1_score
+            self._ai_score = result.p2_score
+        else:
+            if self.alg == "Minimax":
+                start_time = time.perf_counter()
+                result = minimax(self.game_score, self._ai_score, self._human_score)
+                end_time = time.perf_counter()
+                print(f"    Minimax time: {(end_time - start_time) * 1000} ms")
+            elif self.alg == "Alfa-beta":
+                start_time = time.perf_counter()
+                result = alphabeta(self.game_score, self._ai_score, self._human_score)
+                end_time = time.perf_counter()
+                print(f"    AlphaBeta time: {(end_time - start_time) * 1000} ms")
+
+            self.game_score = result.number
+            self._human_score = result.p2_score
+            self._ai_score = result.p1_score
+        self.root.update()
+
+        ai_mult = int(self.game_score / old_score)
+        print(f"    AI: X{ai_mult}")

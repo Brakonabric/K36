@@ -205,8 +205,8 @@ def alphabeta(startNum, p1_score, p2_score):
 
 # graph.printNodes()
 
-turn = minimax(15, 0, 0)
-print(turn.number, turn.p1_score, turn.p2_score)
+
+# print(turn.number, turn.p1_score, turn.p2_score)
 
 # turn = alphabeta(15, 0, 0)
 # print(turn.number, turn.p1_score, turn.p2_score)
