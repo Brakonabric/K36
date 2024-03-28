@@ -2,8 +2,10 @@ from tkinter import *
 from algorithm.play_game import Game
 from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
+
 titleColor = '\x1b[38;5;40m'
 defaultColor = '\033[0m'
+
 
 # Функция закрытия приложения
 def on_click_exit():
@@ -22,7 +24,7 @@ def about(src):
     about_fake_button = Button(root, width=800, height=600, command=close_about, border=0, relief='sunken')
 
     # Проверка источника вызова функции
-    if src == "main":
+    if src == "MAIN":
         # Если источник главное меню, установить изображения "О программе"
         about_fake_button.config(image=Assets.about_game_img)
     else:
@@ -34,29 +36,34 @@ def about(src):
 
 
 # Функция отображения окна игры
-def game_menu(turn, mode, start_score):
-    print(f"{titleColor}[ START: {turn} | ALG: {mode} | SCORE: {start_score} ]{defaultColor}")
+def game_menu(turn, alg, start_score):
+    print(
+        f"{titleColor}[ START: {turn} | ALG: {alg} | SCORE: {start_score} ]{defaultColor}\n"
+        f"\n\t\x1b[38;5;242m[ HUMAN: 0 | SCORE: {start_score} | AI: 0 ]{defaultColor}"
+    )
     # Вызов класса обработки данных с переменными кто начинает, какой алгоритм использовать, с какого числа начинается игра, коренное окно для корректного отображения GUI
-    play = Game(turn, mode, start_score, root)
+    play = Game(alg, start_score, root)
 
     # Внутренняя функция для обработки действий игрока и ИИ
     def play_game(mult):
         # Внутренняя функция для обновления статуса игры
         def check_game_state():
+            # Получение обновленных данных статуса игры
+            gm_sc, hm_sc, ai_sc = play.get_data()
             # Проверка статуса игры, если очки выше 1000 пунктов
             if gm_sc >= 1000:
                 # Если у игрока меньше очков, чем у ИИ:
                 if hm_sc < ai_sc:
                     # Закончить игру в пользу игрока
-                    finish_menu("human", hm_sc, gm_sc, ai_sc)
+                    finish_menu("HUMAN", hm_sc, gm_sc, ai_sc)
                 # Если у ИИ меньше очков, чем у игрока:
                 elif hm_sc > ai_sc:
                     # Закончить игру в пользу ИИ
-                    finish_menu("ai", hm_sc, gm_sc, ai_sc)
+                    finish_menu("AI", hm_sc, gm_sc, ai_sc)
                 # Если у игрока и ИИ одинаковое кол-во очков:
                 else:
                     # Закончить игру в качестве ничьей
-                    finish_menu("draw", hm_sc, gm_sc, ai_sc)
+                    finish_menu("DRAW", hm_sc, gm_sc, ai_sc)
                 # Вызвать функцию уничтожения элементов окна игры
                 destroy()
                 return False
@@ -65,6 +72,8 @@ def game_menu(turn, mode, start_score):
 
         # Внутренняя функция для обновления счета в окне интерфейса
         def update_game_stats():
+            # Получение обновленных данных статуса игры
+            gm_sc, hm_sc, ai_sc = play.get_data()
             human_score.config(text=f"{hm_sc}")
             ai_score.config(text=f"{ai_sc}")
             game_score.config(text=f"{gm_sc}")
@@ -85,8 +94,6 @@ def game_menu(turn, mode, start_score):
         if mult is None:
             # Сделать ход за ИИ
             play.ai_turn()
-            # Получение обновленных данных статуса игры
-            gm_sc, hm_sc, ai_sc = play.get_data("ai")
             # Вызов функции обновления данных игры в окне интерфейса
             update_game_stats()
             # Изменение фона игры на фон хода игрока
@@ -96,8 +103,6 @@ def game_menu(turn, mode, start_score):
         else:  # Если ходит игрок, мультипликатор игрока будет равен 3 или 2
             # Вызов класса игры с аргументов в качестве мультипликатора игрока
             play.human_turn(mult)
-            # Получение обновленных данных статуса игры
-            gm_sc, hm_sc, ai_sc = play.get_data("human")
             # Вызов функции обновления данных игры в окне интерфейса
             update_game_stats()
             # Проверка условий игры, если счёт меньше 1000, игра продолжается
@@ -106,8 +111,6 @@ def game_menu(turn, mode, start_score):
                 ai_img = background.create_image(0, 0, image=Assets.in_game_ai_bg, anchor=NW)
                 # Вызов класса игры для получения данных хода ИИ
                 play.ai_turn()
-                # Получение обновленных данных статуса игры
-                gm_sc, hm_sc, ai_sc = play.get_data("ai")
                 # Вызов функции обновления данных игры в окне интерфейса
                 update_game_stats()
                 # Размещение кнопок в окне
@@ -162,7 +165,7 @@ def game_menu(turn, mode, start_score):
     x2_button = Button(root, image=Assets.in_game_x2, border=0, command=x2)
 
     # Проверка кто ходит первым:
-    if turn == 'human':
+    if turn == 'HUMAN':
         # Установка фона окна на фон хода игрока
         background.create_image(0, 0, image=Assets.in_game_human_bg, anchor=NW)
         # Размещение кнопок в окне
@@ -175,7 +178,7 @@ def game_menu(turn, mode, start_score):
 
 
 # Функция отображения меню итогов игры
-def finish_menu(turn, hum_sc, game_sc, ai_sc):
+def finish_menu(won, hum_sc, game_sc, ai_sc):
     # Внутренняя функция для перехода к меню настройки игры
     def to_preset_menu():
         # Установка фонового изображения и переход к меню настройки игры
@@ -197,16 +200,15 @@ def finish_menu(turn, hum_sc, game_sc, ai_sc):
         main_menu()
 
     # Определение фонового изображения в зависимости от исхода игры
-    if turn == "human":
+    if won == "HUMAN":
         bg_img = Assets.final_victory_bg_img
-        print(f"{titleColor}[ WIN: {turn} | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]{defaultColor}")
-    elif turn == "ai":
+        print(f"\n{titleColor}[ WIN:  HUMAN  |  {hum_sc}  :  {ai_sc}   |   SCORE:  {game_sc} ]{defaultColor}\n")
+    elif won == "AI":
         bg_img = Assets.final_defeat_bg_img
-        print(f"{titleColor}[ WIN: {turn} | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]{defaultColor}")
+        print(f"\n{titleColor}[ WIN:  AI     |  {hum_sc}  :  {ai_sc}   |   SCORE:  {game_sc} ]{defaultColor}\n")
     else:
         bg_img = Assets.final_draw_bg_img
-        print(f"{titleColor}[ WIN: DRAW | {hum_sc} : {ai_sc} | SCORE: {game_sc} ]{defaultColor}")
-    print("")
+        print(f"\n{titleColor}[ WIN:  DRAW   |  {hum_sc}  :  {ai_sc}   |   SCORE:  {game_sc} ]{defaultColor}\n")
 
     # Установка фонового изображения и текстовых элементов для отображения результатов игры
     background.create_image(0, 0, image=bg_img, anchor=NW)
@@ -228,7 +230,7 @@ def finish_menu(turn, hum_sc, game_sc, ai_sc):
 # Функция отображения меню настройки игры
 def preset_menu():
     # Импорт классов для выбора первого игрока и алгоритма ии
-    first_player = WhoPlayFirst()
+    who_turn_first = WhoPlayFirst()
     used_algorithm = UsingAlgorithm()
     start_num = 7  # Начальное значение для очков игры
 
@@ -245,9 +247,9 @@ def preset_menu():
 
     # Внутренняя функция для проверки условий перед началом игры и переходом в игровое меню
     def check_rules():
-        player_state = first_player.current_player()  # получения информации кто ходит первым
-        alg_state = used_algorithm.current_alg()  # получение информации какой алгоритм использовать
-        if player_state is not None and alg_state is not None:
+        first_player = who_turn_first.current_player()  # получения информации кто ходит первым
+        alghoritm = used_algorithm.current_alg()  # получение информации какой алгоритм использовать
+        if first_player is not None and alghoritm is not None:
             # Удаление элементов интерфейса меню настройки используя .destroy()
             start_button.destroy()
             alg_button.destroy()
@@ -258,17 +260,17 @@ def preset_menu():
             minus_button.destroy()
             about_button.destroy()
             # Переход к игровому меню с передачей параметров кто ходит первым, какой алгоритм использовать, с какого числа начать
-            game_menu(player_state, alg_state, start_num)
+            game_menu(first_player, alghoritm, start_num)
         else:
             pass
 
     # Внутренняя функция для изменения отображения кнопки кто ходит первым
     def change_player():
-        first_player.change_player(False)  # вызов сеттера класса для изменения текущего игрока
-        if first_player.current_player() == "human":
+        who_turn_first.change_player(False)  # вызов сеттера класса для изменения текущего игрока
+        if who_turn_first.current_player() == "HUMAN":
             # Изменение изображения кнопки
             who_starts_button.config(image=Assets.preset_human_img)
-        elif first_player.current_player() == "ai":
+        elif who_turn_first.current_player() == "AI":
             # Изменение изображения кнопки
             who_starts_button.config(image=Assets.preset_ai_img)
         else:
@@ -277,10 +279,10 @@ def preset_menu():
     # Внутренняя функция для изменения отображения какой алгоритм использовать в игре
     def change_alg():
         used_algorithm.change_alg(False)  # вызов сеттера класса для изменения текущего алгоритма
-        if used_algorithm.current_alg() == "Alfa-beta":
+        if used_algorithm.current_alg() == "ALPHA-BETA":
             # Изменение изображения кнопки используя метод .config()
             alg_button.config(image=Assets.preset_alg_ab_img)
-        elif used_algorithm.current_alg() == "Minimax":
+        elif used_algorithm.current_alg() == "MINIMAX":
             # Изменение изображения кнопки используя метод .config()
             alg_button.config(image=Assets.preset_alg_mm_img)
         else:
@@ -291,7 +293,7 @@ def preset_menu():
     alg_button = Button(root, image=Assets.preset_algorithm_img, border=0, command=lambda: change_alg())
     who_starts_button = Button(root, image=Assets.preset_who_starts_img, border=0, command=lambda: change_player())
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
-                          activebackground='white', command=lambda: about("preset"))
+                          activebackground='white', command=lambda: about("PRESET"))
     plus_button = Button(root, image=Assets.preset_plus, border=0, command=lambda: modify('+'))
     minus_button = Button(root, image=Assets.preset_minus, border=0, command=lambda: modify('-'))
 
@@ -332,7 +334,7 @@ def main_menu():
     start_button = Button(root, image=Assets.main_menu_start_img, border=0, command=lambda: to_preset_menu())
     exit_button = Button(root, image=Assets.main_menu_exit_img, border=0, command=lambda: on_click_exit())
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
-                          activebackground='white', command=lambda: about("main"))
+                          activebackground='white', command=lambda: about("MAIN"))
 
     # Размещение кнопки "Начать", "Выход","О программе" на экране используя .place(координаты относительно окна)
     start_button.place(x=275, y=263)

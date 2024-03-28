@@ -7,25 +7,11 @@ class WhoPlayFirst:
             self._player = None
         else:
             if self._player is None:
-                self._player = "human"
-            elif self._player == "human":
-                self._player = "ai"
+                self._player = "HUMAN"
+            elif self._player == "HUMAN":
+                self._player = "AI"
             else:
-                self._player = "human"
+                self._player = "HUMAN"
 
     def current_player(self):
         return self._player
-
-    # @property
-    # def player(self):
-    #     return self._player
-    #
-    # @player.setter
-    # def player(self, value):
-    #     self._player = value
-    #
-    # @player.getter
-    # def player(self):
-    #     return self._player
-
-

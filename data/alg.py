@@ -7,23 +7,11 @@ class UsingAlgorithm:
             self._alg = None
         else:
             if self._alg is None:
-                self._alg = "Alfa-beta"
-            elif self._alg == "Alfa-beta":
-                self._alg = "Minimax"
+                self._alg = "ALPHA-BETA"
+            elif self._alg == "ALPHA-BETA":
+                self._alg = "MINIMAX"
             else:
-                self._alg = "Alfa-beta"
+                self._alg = "ALPHA-BETA"
 
     def current_alg(self):
         return self._alg
-
-    # @property
-    # def alg(self):
-    #     return self._alg
-    #
-    # @alg.setter
-    # def alg(self, value):
-    #     self._alg = value
-    #
-    # @alg.getter
-    # def get_alg(self):
-    #     return self._alg
