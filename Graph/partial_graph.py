@@ -29,6 +29,7 @@ class Graph:
     self.levelSet = {
       0: set()
     }
+    self.visited_nodes_count = 0
 
   def generateSetValue(self, Graphnode):
     result = str(Graphnode.p1_score) + str(Graphnode.number) + str(Graphnode.p2_score)
@@ -123,6 +124,7 @@ class Graph:
 
 
   def minimaxEval(self, node, maximizingPlayer):
+    self.visited_nodes_count += 1
     if not node.ChildNodes:
       return node.eval
 
@@ -154,6 +156,7 @@ class Graph:
         value.eval = round(math.fabs((value.number-math.fabs(value.number-avg)*1.1))*(-(value.p1_score+value.p2_score)), 0)
 
   def alfaBetaEval(self, node, alpha, beta, maximizingPlayer):
+    self.visited_nodes_count += 1
     if not node.ChildNodes:
       return node.eval
 
@@ -192,6 +195,7 @@ def minimax(startNum, p1_score, p2_score):
   graph.heuristic()
   graph.minimaxEval(graph.nodes[0], True)
   # graph.printNodes()
+  print("visited nodes: ", graph.visited_nodes_count)
   best_child = graph.choose_best_child()
   return best_child
 
@@ -202,6 +206,7 @@ def alphabeta(startNum, p1_score, p2_score):
   graph.heuristic()
   graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), True)
   # graph.printNodes()
+  print("visited nodes: ", graph.visited_nodes_count)
   best_child = graph.choose_best_child()
   return best_child
 
