@@ -141,11 +141,16 @@ class Graph:
       return minEval
 
   def heuristic(self):
+    sum = 0
+    quant = 0
     for key, value in self.nodes.items():
       if not value.ChildNodes:
-          value.eval = value.number
-
-
+          sum = sum + value.number
+          quant +=1
+    avg = sum/quant
+    for key, value in self.nodes.items():
+      if not value.ChildNodes:
+        value.eval = round(math.fabs((value.number-math.fabs(value.number-avg)*1.1))*(-(value.p1_score+value.p2_score)), 0)
 
   def alfaBetaEval(self, node, alpha, beta, maximizingPlayer):
     if not node.ChildNodes:
