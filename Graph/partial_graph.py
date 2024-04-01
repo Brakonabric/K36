@@ -1,3 +1,4 @@
+import math
 from queue import Queue
 
 
@@ -28,6 +29,7 @@ class Graph:
     self.levelSet = {
       0: set()
     }
+    self.visited_nodes_count = 0
 
   def generateSetValue(self, Graphnode):
     result = str(Graphnode.p1_score) + str(Graphnode.number) + str(Graphnode.p2_score)
@@ -122,6 +124,7 @@ class Graph:
 
 
   def minimaxEval(self, node, maximizingPlayer):
+    self.visited_nodes_count += 1
     if not node.ChildNodes:
       return node.eval
 
@@ -141,13 +144,19 @@ class Graph:
       return minEval
 
   def heuristic(self):
+    sum = 0
+    quant = 0
     for key, value in self.nodes.items():
       if not value.ChildNodes:
-          value.eval = value.number
-
-
+          sum = sum + value.number
+          quant +=1
+    avg = sum/quant  
+    for key, value in self.nodes.items():
+      if not value.ChildNodes:
+        value.eval = round(math.fabs((value.number-math.fabs(value.number-avg)*1.1))*(-(value.p1_score+value.p2_score)), 0)
 
   def alfaBetaEval(self, node, alpha, beta, maximizingPlayer):
+    self.visited_nodes_count += 1
     if not node.ChildNodes:
       return node.eval
 
@@ -176,8 +185,10 @@ class Graph:
     valid_children = [child for child in self.nodes[0].ChildNodes if child.eval is not None]
     if not valid_children:
       return None
-
-    best_child = max(valid_children, key=lambda x: x.eval)
+    if all(child.eval == valid_children[0].eval for child in valid_children):
+       best_child = max(valid_children, key=lambda x: x.number)
+    else:
+      best_child = max(valid_children, key=lambda x: x.eval)
     return best_child
 
 def minimax(startNum, p1_score, p2_score):
@@ -194,7 +205,10 @@ def alphabeta(startNum, p1_score, p2_score):
   graph = Graph()
   graph.generateGraph(startNum, p1_score, p2_score)
   graph.heuristic()
-  graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), True)
+  if startNum % 2 == 0:
+    graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), False)
+  else:
+    graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), True)
   # graph.printNodes()
   best_child = graph.choose_best_child()
   return best_child
