@@ -51,7 +51,7 @@ class Game:
             f"\n\t\tAI: X{int(self.game_score / old_score)}"
             f"\t{timeColor}TIME: {round((end_time - start_time) * 1000, 5)} ms{defaultColor}"
             f"\n\t\t\tDATA: {old_score} -> {self.game_score}"
-            f"\n\t\t{nodeColor}  NODES PASSED: {12} pcs {defaultColor}"
+            f"\n\t\t{nodeColor}  NODES PASSED: {result.visited_nodes} pcs {defaultColor}"
             f"\n\n\t{titleColor}[ HUMAN: {result.p2_score} | SCORE: {result.number} | AI: {result.p1_score} ]{defaultColor}"
         )
 
