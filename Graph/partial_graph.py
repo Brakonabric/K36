@@ -13,6 +13,7 @@ class GraphNode:
     self.ChildNodes = []  # List to store child nodes
     self.hashValue = str(p1_score) + str(number) + str(p2_score)
     self.eval = None
+    self.visited_nodes = 0
 
 
 class setNode:
@@ -92,7 +93,7 @@ class Graph:
 
   # Method to generate the graph starting from a given number
   def generateGraph(self, startNum, p1_score, p2_score):
-    maxlevel = 3
+    maxlevel = 5
     maxNum = 1000
     # Create the root node and add it to the queue
     self.nodes[self.nodeID] = GraphNode(self.nodeID, startNum, 0, p1_score, p2_score)
@@ -125,6 +126,7 @@ class Graph:
 
   def minimaxEval(self, node, maximizingPlayer):
     self.visited_nodes_count += 1
+   #node.visited_nodes = self.visited_nodes_count
     if not node.ChildNodes:
       return node.eval
 
@@ -144,19 +146,26 @@ class Graph:
       return minEval
 
   def heuristic(self):
-    sum = 0
-    quant = 0
     for key, value in self.nodes.items():
       if not value.ChildNodes:
-          sum = sum + value.number
-          quant +=1
-    avg = sum/quant  
-    for key, value in self.nodes.items():
-      if not value.ChildNodes:
-        value.eval = round(math.fabs((value.number-math.fabs(value.number-avg)*1.1))*(-(value.p1_score+value.p2_score)), 0)
+        value.eval = value.p2_score - value.p1_score
 
+    # sum = 0
+    # quant = 0
+    # for key, value in self.nodes.items():
+    #   if not value.ChildNodes:
+    #       sum = sum + value.number
+    #       quant +=1
+    # avg = sum/quant  
+    # for key, value in self.nodes.items():
+    #   if not value.ChildNodes:
+    #     value.eval = round(math.fabs((value.number-math.fabs(value.number-avg)*1.1))*(-(value.p1_score+value.p2_score)), 0)
+
+
+  
   def alfaBetaEval(self, node, alpha, beta, maximizingPlayer):
     self.visited_nodes_count += 1
+    #node.visited_nodes = self.visited_nodes_count
     if not node.ChildNodes:
       return node.eval
 
@@ -185,10 +194,10 @@ class Graph:
     valid_children = [child for child in self.nodes[0].ChildNodes if child.eval is not None]
     if not valid_children:
       return None
-    if all(child.eval == valid_children[0].eval for child in valid_children):
-       best_child = max(valid_children, key=lambda x: x.number)
-    else:
-      best_child = max(valid_children, key=lambda x: x.eval)
+    # if all(child.eval == valid_children[0].eval for child in valid_children):
+    #    best_child = max(valid_children, key=lambda x: x.number)
+    # else:
+    best_child = max(valid_children, key=lambda x: x.eval)
     return best_child
 
 def minimax(startNum, p1_score, p2_score):
@@ -198,6 +207,7 @@ def minimax(startNum, p1_score, p2_score):
   graph.minimaxEval(graph.nodes[0], True)
   # graph.printNodes()
   best_child = graph.choose_best_child()
+  best_child.visited_nodes = graph.visited_nodes_count
   return best_child
 
 
@@ -205,12 +215,13 @@ def alphabeta(startNum, p1_score, p2_score):
   graph = Graph()
   graph.generateGraph(startNum, p1_score, p2_score)
   graph.heuristic()
-  if startNum % 2 == 0:
-    graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), False)
-  else:
-    graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), True)
+  # if startNum % 2 == 0:
+  #   graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), False)
+  # else:
+  graph.alfaBetaEval(graph.nodes[0], float('-inf'), float('inf'), True)
   # graph.printNodes()
   best_child = graph.choose_best_child()
+  best_child.visited_nodes = graph.visited_nodes_count
   return best_child
 
 
