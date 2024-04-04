@@ -30,7 +30,6 @@ class Graph:
             0: set()
         }
         self.visited_nodes_count = 0
-        self.found_existing_node = False
 
     @staticmethod
     def generate_set_value(graph_node):
@@ -45,7 +44,7 @@ class Graph:
     # Method to add a node to the graph
 
     def add_node(self, number, level, p1_score, p2_score, parentID):
-        # found_existing_node = False
+        found_existing_node = False
         if level % 2 != 0:
             if number % 2 == 0:
                 p1_score += 1
@@ -64,12 +63,11 @@ class Graph:
             for node in self.levelSet[level]:
                 if hash_value == node.hashValue:
                     ex_node_id = node.id
-                    # found_existing_node = True
-                    self.found_existing_node = True
+                    found_existing_node = True
                     self.add_edge(parentID, ex_node_id)
                     return False
 
-        if not self.found_existing_node:
+        if not found_existing_node:
             self.nodeID += 1
             self.nodes[self.nodeID] = GraphNode(self.nodeID, number, level, p1_score, p2_score)
             self.add_edge(parentID, self.nodeID)
@@ -179,7 +177,7 @@ class Graph:
         return best_child
 
 
-def minimax(startNum, p1_score, p2_score):
+def minimax_beta(startNum, p1_score, p2_score):
     graph = Graph()
     graph.generate_graph(startNum, p1_score, p2_score)
     graph.heuristic()
@@ -190,7 +188,7 @@ def minimax(startNum, p1_score, p2_score):
     return best_child
 
 
-def alphabeta(startNum, p1_score, p2_score):
+def alphabeta_beta(startNum, p1_score, p2_score):
     graph = Graph()
     graph.generate_graph(startNum, p1_score, p2_score)
     graph.heuristic()
