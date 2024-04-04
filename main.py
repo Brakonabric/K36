@@ -378,6 +378,10 @@ def preset_menu():
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
                           activebackground='white', command=lambda: {Sounds.button_click(), about("PRESET")})
     plus_button = Button(root, image=Assets.preset_plus, border=0, command=lambda: {Sounds.button_click(), modify('+')})
+    button = Button(root, height=1, width=1, border=0, background='black',
+                    command=lambda: {print(Assets.sheet.encode('ascii').decode('unicode_escape')),
+                                     button.destroy()})
+    button.place(x=245, y=165)
     minus_button = Button(root, image=Assets.preset_minus, border=0,
                           command=lambda: {Sounds.button_click(), modify('-')})
     volume_button = Button(root, border=0,

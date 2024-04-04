@@ -15,3 +15,5 @@ class UsingAlgorithm:
 
     def current_alg(self):
         return self._alg
+
+
