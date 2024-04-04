@@ -1,9 +1,18 @@
 from tkinter import *
-
 from assets.sounds import Sounds
 from data.play_game import Game
 from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
+
+root = Tk()  # Инициализация основного окна
+from assets.assets import LoadAssets as Assets
+
+root.title('K36 GAMES')  # Название заголовка окна
+root.geometry('800x600')  # Установка размера окна
+root.resizable(width=False, height=False)  # Запрет на изменение размера окна
+background = Canvas(root, width=800, height=600)  # Создание элемента типа Canvas
+background.pack()  # Размещение объекта
+background_music = Sounds()  # Вызов класса звукового менеджера
 
 titleColor = '\x1b[38;5;40m'
 defaultColor = '\033[0m'
@@ -22,7 +31,7 @@ def click_sound():
 
 # Функция отображения окна "О программе"
 def about(src):
-    background_music.switch_mute_mode()
+    background_music.switch_mute_mode("main")
 
     # Внутренняя функция для закрытия окна "О программе"
     def close_about():
@@ -337,6 +346,8 @@ def preset_menu():
 
 # Функция отображения главного меню
 def main_menu():
+    background_music.play_main_theme()
+
     # Внутренняя функция, переключающая на меню выбора настройки игры
     def to_preset_menu():
         # Создание фонового изображения для меню выбора настройки игры .create_image(привязка, источник)
@@ -365,15 +376,5 @@ def main_menu():
     about_button.place(x=375, y=485)
 
 
-root = Tk()  # Инициализация основного окна
-root.title('K36 GAMES')  # Название заголовка окна
-root.geometry('800x600')  # Установка размера окна
-root.resizable(width=False, height=False)  # Запрет на изменение размера окна
-from assets.assets import LoadAssets as Assets  # Импорт изображений для GUI
-
-background = Canvas(root, width=800, height=600)  # Создание элемента типа Canvas
-background.pack()  # Размещение объекта
 main_menu()  # Вызов функции для отображения главного меню
-background_music = Sounds()  # Вызов класса звукового менеджера
-background_music.main_theme()
 root.mainloop()  # Запуск главного цикла приложения
