@@ -35,4 +35,12 @@ class LoadAssets:
     final_exit_img = PhotoImage(file='assets/img/final/final_exit.png')
 
     about_game_img = PhotoImage(file='assets/img/about_game.png')
-    about_rule_img = PhotoImage(file='assets/img/about_rule.png')
+    about_rules_img = PhotoImage(file='assets/img/about_rule.png')
+    authors_img = PhotoImage(file='assets/img/authors.png')
+    icon = 'assets/img/icon.ico'
+
+    mute_w = PhotoImage(file='assets/img/mute_w.png')
+    unmute_w = PhotoImage(file='assets/img/unmute_w.png')
+    mute = PhotoImage(file='assets/img/mute.png')
+    unmute = PhotoImage(file='assets/img/unmute.png')
+

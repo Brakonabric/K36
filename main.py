@@ -4,19 +4,6 @@ from data.play_game import Game
 from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
 
-root = Tk()  # Инициализация основного окна
-from assets.assets import LoadAssets as Assets
-
-root.title('K36 GAMES')  # Название заголовка окна
-root.geometry('800x600')  # Установка размера окна
-root.resizable(width=False, height=False)  # Запрет на изменение размера окна
-background = Canvas(root, width=800, height=600)  # Создание элемента типа Canvas
-background.pack()  # Размещение объекта
-background_music = Sounds()  # Вызов класса звукового менеджера
-
-titleColor = '\x1b[38;5;40m'
-defaultColor = '\033[0m'
-
 
 # Функция закрытия приложения
 def on_click_exit():
@@ -24,38 +11,76 @@ def on_click_exit():
     root.destroy()
 
 
-# Функция для воспроизведения звука нажатия кнопки
-def click_sound():
-    Sounds.button_click()  # Вызов класса звукового менеджера
+# Функция для изменения иконки звука
+def volume_img(volume_button, mode):
+    mute = background_music.get_mute_flag()
+    if mode == "DARK":
+        if mute:
+            volume_button.config(image=Assets.mute_w)
+        else:
+            volume_button.config(image=Assets.unmute_w)
+    else:
+        if mute:
+            volume_button.config(image=Assets.mute)
+        else:
+            volume_button.config(image=Assets.unmute)
+
+
+# Функция вкл/выкл мелодии
+def volume_switch():
+    background_music.switch_mute_mode()
 
 
 # Функция отображения окна "О программе"
 def about(src):
-    background_music.switch_mute_mode("main")
-
     # Внутренняя функция для закрытия окна "О программе"
-    def close_about():
+    def close_rules():
+        # Уничтожение кнопки
+        rules_fake_button.destroy()
+
+    # Функция отображения авторов
+    def authors():
         # Уничтожение кнопки
         about_fake_button.destroy()
+        # Размещение полноэкранной кнопки на экране
+        author_fake_button.place(x=-1.5, y=-1.5)
+
+    # Внутренняя функция для закрытия окна "авторы"
+    def close_authors():
+        # Уничтожение кнопки
+        author_fake_button.destroy()
+
+    # Создание полноэкранной кнопки для отображения окна "авторы"
+    author_fake_button = Button(root, width=800, height=600, image=Assets.authors_img,
+                                command=lambda: {Sounds.button_click(), close_authors()},
+                                border=0,
+                                relief='sunken')
 
     # Создание полноэкранной кнопки для отображения окна "О программе"
-    about_fake_button = Button(root, width=800, height=600, command=lambda: {close_about(), click_sound()}, border=0,
+    about_fake_button = Button(root, width=800, height=600, image=Assets.about_game_img,
+                               command=lambda: {Sounds.button_click(), authors()},
+                               border=0,
                                relief='sunken')
-
+    # Создание полноэкранной кнопки для отображения окна "Правила игры"
+    rules_fake_button = Button(root, width=800, height=600, image=Assets.about_rules_img,
+                               command=lambda: {Sounds.button_click(), close_rules()},
+                               border=0,
+                               relief='sunken')
     # Проверка источника вызова функции
     if src == "MAIN":
-        # Если источник главное меню, установить изображения "О программе"
-        about_fake_button.config(image=Assets.about_game_img)
+        # Размещение полноэкранной кнопки на экране
+        about_fake_button.place(x=-1.5, y=-1.5)
     else:
-        # Если источник меню настройки игры, установить изображения "Правила игры"
-        about_fake_button.config(image=Assets.about_rule_img)
-
-    # Размещение полноэкранной кнопки на экране
-    about_fake_button.place(x=-1.5, y=-1.5)
+        # Размещение полноэкранной кнопки на экране
+        rules_fake_button.place(x=-1.5, y=-1.5)
 
 
 # Функция отображения окна игры
 def game_menu(turn, alg, start_score):
+    # Воспроизвести звук перехода
+    Sounds.play_fx("transition")
+    # Включить игровую мелодию
+    background_music.play_theme("game")
     print(
         f"{titleColor}[ START: {turn} | ALG: {alg} | SCORE: {start_score} ]{defaultColor}\n"
         f"\n\t\x1b[38;5;242m[ HUMAN: 0 | SCORE: {start_score} | AI: 0 ]{defaultColor}"
@@ -105,6 +130,7 @@ def game_menu(turn, alg, start_score):
             human_score.destroy()
             game_score.destroy()
             ai_score.destroy()
+            volume_button.destroy()
             info_bar.destroy()
             x2_button.destroy()
             x3_button.destroy()
@@ -166,6 +192,7 @@ def game_menu(turn, alg, start_score):
         # Спрятать кнопки
         x3_button.place_forget()
         x2_button.place_forget()
+        volume_button.place_forget()
         # Вызвать функцию игры с мультипликатором 3
         play_game(3)
 
@@ -174,6 +201,7 @@ def game_menu(turn, alg, start_score):
         # Спрятать кнопки
         x3_button.place_forget()
         x2_button.place_forget()
+        volume_button.place_forget()
         # Вызвать функцию игры с мультипликатором 2
         play_game(2)
 
@@ -181,12 +209,18 @@ def game_menu(turn, alg, start_score):
     def xbutton_place():
         x3_button.place(x=412, y=349)
         x2_button.place(x=286, y=349)
+        volume_button.place(x=36, y=30)
 
     # Создание кнопок вызова функции игры, функция вызывается с аргументов в качестве мультипликатора игрока (3 или 2)
     # Если игрок ходит первым, первый вызов функции определит корректный порядок хода игры
-    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: {x3(), click_sound()})
-    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: {x2(), click_sound()})
-
+    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: {Sounds.play_fx("set"), x3()})
+    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: {Sounds.play_fx("set"), x2()})
+    volume_button = Button(root, border=0,
+                           background='black',
+                           highlightbackground='black',
+                           activebackground='black',
+                           command=lambda: {Sounds.button_click(), volume_switch(), volume_img(volume_button, "DARK")})
+    volume_img(volume_button, "DARK")  # Установка изображения кнопки
     # Проверка кто ходит первым:
     if turn == 'HUMAN':
         # Установка фона окна на фон хода игрока
@@ -202,14 +236,20 @@ def game_menu(turn, alg, start_score):
 
 # Функция отображения меню итогов игры
 def finish_menu(won, hum_sc, game_sc, ai_sc):
+    # Включить мелодию меню результата
+    background_music.play_theme("end")
+
     # Внутренняя функция для перехода к меню настройки игры
     def to_preset_menu():
+        # Включить мелодию главного меню
+        background_music.play_theme("main")
         # Установка фонового изображения и переход к меню настройки игры
         background.create_image(0, 0, image=Assets.preset_back_img, anchor=NW)
         # Уничтожение кнопок и элементов интерфейса текущего меню
         start_again_button.destroy()
         exit_button.destroy()
         menu_bar.destroy()
+        volume_button.destroy()
         # Вызов функции для отображения меню настройки игры
         preset_menu()
 
@@ -219,17 +259,21 @@ def finish_menu(won, hum_sc, game_sc, ai_sc):
         start_again_button.destroy()
         menu_bar.destroy()
         exit_button.destroy()
+        volume_button.destroy()
         # Вызов функции для отображения главного меню
         main_menu()
 
     # Определение фонового изображения в зависимости от исхода игры
     if won == "HUMAN":
+        Sounds.play_fx("end_win")
         bg_img = Assets.final_victory_bg_img
         print(f"\n{titleColor}[ WIN:  HUMAN  |  {hum_sc}  :  {ai_sc}   |   SCORE:  {game_sc} ]{defaultColor}\n")
     elif won == "AI":
+        Sounds.play_fx("end_defeat")
         bg_img = Assets.final_defeat_bg_img
         print(f"\n{titleColor}[ WIN:  AI     |  {hum_sc}  :  {ai_sc}   |   SCORE:  {game_sc} ]{defaultColor}\n")
     else:
+        Sounds.play_fx("end_draw")
         bg_img = Assets.final_draw_bg_img
         print(f"\n{titleColor}[ WIN:  DRAW   |  {hum_sc}  :  {ai_sc}   |   SCORE:  {game_sc} ]{defaultColor}\n")
 
@@ -241,16 +285,22 @@ def finish_menu(won, hum_sc, game_sc, ai_sc):
                            width=200, anchor=NW)
     # Создание кнопок для перехода к различным меню
     exit_button = Button(root, image=Assets.final_exit_img, border=0,
-                         command=lambda: {on_click_exit(), click_sound()})
+                         command=lambda: {Sounds.play_fx("off"), on_click_exit()})
     start_again_button = Button(root, image=Assets.final_start_img, border=0,
-                                command=lambda: {to_preset_menu(), click_sound()})
+                                command=lambda: {Sounds.play_fx("on"), to_preset_menu()})
     menu_bar = Button(root, image=Assets.final_menu_img, border=0,
-                      command=lambda: {to_main(), click_sound()})
-
+                      command=lambda: {Sounds.play_fx("on"), to_main()})
+    volume_button = Button(root, border=0,
+                           background='white',
+                           highlightbackground='white',
+                           activebackground='white',
+                           command=lambda: {Sounds.button_click(), volume_switch(), volume_img(volume_button, "LIGHT")})
+    volume_img(volume_button, "LIGHT")  # Установка изображения кнопки
     # Размещение кнопок на экране
     start_again_button.place(x=500, y=270)
     menu_bar.place(x=500, y=330)
     exit_button.place(x=500, y=390)
+    volume_button.place(x=36, y=30)
 
 
 # Функция отображения меню настройки игры
@@ -276,6 +326,7 @@ def preset_menu():
         first_player = who_turn_first.current_player()  # получения информации кто ходит первым
         algorithm = used_algorithm.current_alg()  # получение информации какой алгоритм использовать
         if first_player is not None and algorithm is not None:
+            Sounds.play_fx("transition")
             # Удаление элементов интерфейса меню настройки используя .destroy()
             start_button.destroy()
             alg_button.destroy()
@@ -285,11 +336,13 @@ def preset_menu():
             plus_button.destroy()
             minus_button.destroy()
             about_button.destroy()
+            volume_button.destroy()
             # Переход к игровому меню с передачей параметров кто ходит первым,
             # какой алгоритм использовать, с какого числа начать
             game_menu(first_player, algorithm, start_num)
         else:
-            pass
+            # Воспроизвести звук ошибки
+            Sounds.play_fx("error")
 
     # Внутренняя функция для изменения отображения кнопки кто ходит первым
     def change_player():
@@ -317,16 +370,22 @@ def preset_menu():
 
     # Создание кнопок и элементов интерфейса для меню настройки игры используя конструктор Button(параметры)
     start_button = Button(root, image=Assets.main_menu_start_img, border=0,
-                          command=lambda: {check_rules(), click_sound()})
+                          command=lambda: check_rules())
     alg_button = Button(root, image=Assets.preset_algorithm_img, border=0,
-                        command=lambda: {change_alg(), click_sound()})
+                        command=lambda: {Sounds.button_click(), change_alg()})
     who_starts_button = Button(root, image=Assets.preset_who_starts_img, border=0,
-                               command=lambda: {change_player(), click_sound()})
+                               command=lambda: {Sounds.button_click(), change_player()})
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
-                          activebackground='white', command=lambda: about("PRESET"))
-    plus_button = Button(root, image=Assets.preset_plus, border=0, command=lambda: {modify('+'), click_sound()})
-    minus_button = Button(root, image=Assets.preset_minus, border=0, command=lambda: {modify('-'), click_sound()})
-
+                          activebackground='white', command=lambda: {Sounds.button_click(), about("PRESET")})
+    plus_button = Button(root, image=Assets.preset_plus, border=0, command=lambda: {Sounds.button_click(), modify('+')})
+    minus_button = Button(root, image=Assets.preset_minus, border=0,
+                          command=lambda: {Sounds.button_click(), modify('-')})
+    volume_button = Button(root, border=0,
+                           background='white',
+                           highlightbackground='white',
+                           activebackground='white',
+                           command=lambda: {Sounds.button_click(), volume_switch(), volume_img(volume_button, "LIGHT")})
+    volume_img(volume_button, "LIGHT")  # Установка изображения кнопки
     # Создание блока для отображения начального числа игры используя конструкторы Canvas и Label
     input_box = Canvas(root, width=76, height=50, highlightthickness=0)
     input_box.create_image(0, 0, image=Assets.preset_number_img, anchor=NW)
@@ -342,11 +401,12 @@ def preset_menu():
     minus_button.place(x=303, y=349)
     plus_button.place(x=445, y=349)
     start_on.place(x=370, y=358)
+    volume_button.place(x=36, y=30)
 
 
 # Функция отображения главного меню
 def main_menu():
-    background_music.play_main_theme()
+    background_music.play_theme("main")
 
     # Внутренняя функция, переключающая на меню выбора настройки игры
     def to_preset_menu():
@@ -356,6 +416,7 @@ def main_menu():
         start_button.destroy()
         exit_button.destroy()
         about_button.destroy()
+        volume_button.destroy()
         # Вызов функции для отображения меню выбора настройки
         preset_menu()
 
@@ -364,17 +425,36 @@ def main_menu():
 
     # Создание кнопки "Начать", "Выход","О программе" для перехода к меню настройки игры.
     start_button = Button(root, image=Assets.main_menu_start_img, border=0,
-                          command=lambda: {to_preset_menu(), click_sound()})
+                          command=lambda: {Sounds.button_click(), to_preset_menu()})
     exit_button = Button(root, image=Assets.main_menu_exit_img, border=0,
-                         command=lambda: {on_click_exit(), click_sound()})
+                         command=lambda: {Sounds.play_fx("off"), on_click_exit()})
     about_button = Button(root, image=Assets.main_menu_about_img, border=0, background='white',
-                          activebackground='white', command=lambda: {about("MAIN"), click_sound()})
-
+                          activebackground='white', command=lambda: {Sounds.button_click(), about("MAIN")})
+    volume_button = Button(root, border=0,
+                           background='white',
+                           highlightbackground='white',
+                           activebackground='white',
+                           command=lambda: {Sounds.button_click(), volume_switch(), volume_img(volume_button, "LIGHT")})
+    volume_img(volume_button, "LIGHT")  # Установка изображения кнопки
     # Размещение кнопки "Начать", "Выход","О программе" на экране используя .place(координаты относительно окна)
+    volume_button.place(x=36, y=30)
     start_button.place(x=275, y=263)
     exit_button.place(x=300, y=350)
     about_button.place(x=375, y=485)
 
 
+root = Tk()  # Инициализация основного окна
+root.title('K36 GAMES')  # Название заголовка окна
+root.geometry('800x600')  # Установка размера окна
+root.resizable(width=False, height=False)  # Запрет на изменение размера окна
+background = Canvas(root, width=800, height=600)  # Создание элемента типа Canvas
+from assets.assets import LoadAssets as Assets
+
+root.iconbitmap(Assets.icon)  # Изображение иконки в заголовке
+root.wm_iconbitmap(Assets.icon)  # Изображение иконки на панели windows
+background.pack()  # Размещение объекта
+background_music = Sounds()  # Вызов класса звукового менеджера
+titleColor = '\x1b[38;5;40m'
+defaultColor = '\033[0m'
 main_menu()  # Вызов функции для отображения главного меню
 root.mainloop()  # Запуск главного цикла приложения
