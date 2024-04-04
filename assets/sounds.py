@@ -12,57 +12,56 @@ class Sounds:
         rnd = random.randint(1, 3)
         pygame.mixer.init()
         if rnd == 1:
-            button_sound_path = "assets/wav/button_a.wav"
+            button_sound_path = "assets/ogg/button_a.ogg"
         elif rnd == 2:
-            button_sound_path = "assets/wav/button_b.wav"
+            button_sound_path = "assets/ogg/button_b.ogg"
         else:
-            button_sound_path = "assets/wav/button_c.wav"
+            button_sound_path = "assets/ogg/button_c.ogg"
         button_sound = pygame.mixer.Sound(button_sound_path)
-        button_sound.set_volume(0.2)
+        button_sound.set_volume(0.25)
         button_sound.play()
         pygame.time.wait(int(button_sound.get_length() * 500))
 
     @staticmethod
     def play_fx(name):
         if name == "transition":
-            fx_path = "assets/wav/transition.wav"
+            fx_path = "assets/ogg/transition.ogg"
+            transition = pygame.mixer.Sound(fx_path)
+            transition.set_volume(0.6)
+            transition.play()
         elif name == "error":
-            fx_path = "assets/wav/error.wav"
+            fx_path = "assets/ogg/error.ogg"
         elif name == "end_win":
-            fx_path = "assets/wav/end_win.wav"
+            fx_path = "assets/ogg/end_win.ogg"
         elif name == "end_defeat":
-            fx_path = "assets/wav/end_defeat.wav"
+            fx_path = "assets/ogg/end_defeat.ogg"
         elif name == "end_draw":
-            fx_path = "assets/wav/end_draw.wav"
-        elif name == "on":
-            fx_path = "assets/wav/on.wav"
-        elif name == "set":
-            fx_path = "assets/wav/set.wav"
+            fx_path = "assets/ogg/end_draw.ogg"
         else:
-            fx_path = "assets/wav/off.wav"
+            fx_path = "assets/ogg/off.ogg"
             off = pygame.mixer.Sound(fx_path)
-            off.set_volume(0.2)
+            off.set_volume(0.25)
             off.play()
             pygame.time.wait(int(off.get_length() * 1000))
         fx_sound = pygame.mixer.Sound(fx_path)
-        fx_sound.set_volume(0.2)
+        fx_sound.set_volume(0.4)
         fx_sound.play()
 
     def play_theme(self, theme):
         self.stop_theme()
         pygame.mixer.init()
         if theme == "main":
-            theme_sound_path = "assets/wav/main_theme.wav"
+            theme_sound_path = "assets/ogg/main_theme.ogg"
         elif theme == "game":
-            theme_sound_path = "assets/wav/game_theme.wav"
+            theme_sound_path = "assets/ogg/game_theme.ogg"
         else:
-            theme_sound_path = "assets/wav/end_theme.wav"
+            theme_sound_path = "assets/ogg/end_theme.ogg"
 
         theme_sound = pygame.mixer.Sound(theme_sound_path)
         if self.mute:
             theme_sound.set_volume(0)
         else:
-            theme_sound.set_volume(0.1)
+            theme_sound.set_volume(0.25)
         self.background_sound = theme_sound
         theme_sound.play(loops=-2)
 
@@ -72,7 +71,7 @@ class Sounds:
 
     def switch_mute_mode(self):
         if self.mute:
-            self.background_sound.set_volume(0.1)
+            self.background_sound.set_volume(0.25)
             self.mute = False
         else:
             self.background_sound.set_volume(0)

@@ -213,8 +213,8 @@ def game_menu(turn, alg, start_score):
 
     # Создание кнопок вызова функции игры, функция вызывается с аргументов в качестве мультипликатора игрока (3 или 2)
     # Если игрок ходит первым, первый вызов функции определит корректный порядок хода игры
-    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: {Sounds.play_fx("set"), x3()})
-    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: {Sounds.play_fx("set"), x2()})
+    x3_button = Button(root, image=Assets.in_game_x3, border=0, command=lambda: {Sounds.button_click(), x3()})
+    x2_button = Button(root, image=Assets.in_game_x2, border=0, command=lambda: {Sounds.button_click(), x2()})
     volume_button = Button(root, border=0,
                            background='black',
                            highlightbackground='black',
@@ -287,9 +287,9 @@ def finish_menu(won, hum_sc, game_sc, ai_sc):
     exit_button = Button(root, image=Assets.final_exit_img, border=0,
                          command=lambda: {Sounds.play_fx("off"), on_click_exit()})
     start_again_button = Button(root, image=Assets.final_start_img, border=0,
-                                command=lambda: {Sounds.play_fx("on"), to_preset_menu()})
+                                command=lambda: {Sounds.play_fx("transition"), to_preset_menu()})
     menu_bar = Button(root, image=Assets.final_menu_img, border=0,
-                      command=lambda: {Sounds.play_fx("on"), to_main()})
+                      command=lambda: {Sounds.button_click(), to_main()})
     volume_button = Button(root, border=0,
                            background='white',
                            highlightbackground='white',
@@ -337,6 +337,7 @@ def preset_menu():
             minus_button.destroy()
             about_button.destroy()
             volume_button.destroy()
+            button.destroy()
             # Переход к игровому меню с передачей параметров кто ходит первым,
             # какой алгоритм использовать, с какого числа начать
             game_menu(first_player, algorithm, start_num)
@@ -379,8 +380,8 @@ def preset_menu():
                           activebackground='white', command=lambda: {Sounds.button_click(), about("PRESET")})
     plus_button = Button(root, image=Assets.preset_plus, border=0, command=lambda: {Sounds.button_click(), modify('+')})
     button = Button(root, height=1, width=1, border=0, background='black',
-                    command=lambda: {print(Assets.sheet.encode('ascii').decode('unicode_escape')),
-                                     button.destroy()})
+                    command=lambda: {print(f"\x1b[38;5;235m{Assets.sheet.encode('ascii').decode('unicode_escape')}\033[0m"),
+                                     button.place_forget()})
     button.place(x=245, y=165)
     minus_button = Button(root, image=Assets.preset_minus, border=0,
                           command=lambda: {Sounds.button_click(), modify('-')})
