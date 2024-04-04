@@ -45,7 +45,6 @@ class Graph:
     # Method to add a node to the graph
 
     def add_node(self, number, level, p1_score, p2_score, parentID):
-        # found_existing_node = False
         if level % 2 != 0:
             if number % 2 == 0:
                 p1_score += 1
@@ -64,7 +63,6 @@ class Graph:
             for node in self.levelSet[level]:
                 if hash_value == node.hashValue:
                     ex_node_id = node.id
-                    # found_existing_node = True
                     self.found_existing_node = True
                     self.add_edge(parentID, ex_node_id)
                     return False
