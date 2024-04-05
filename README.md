@@ -1,4 +1,4 @@
-# AI_K36 group
+# K36 team
 
 ### Papildu prasības programmatūrai:
 Spēles sākumā cilvēks-spēlētājs izvēlas, ar kuru skaitli diapazonā no 5 līdz 15 sākt spēli. 
