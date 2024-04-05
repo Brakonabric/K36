@@ -45,6 +45,7 @@ class Graph:
     # Method to add a node to the graph
 
     def add_node(self, number, level, p1_score, p2_score, parentID):
+        self.found_existing_node = False
         if level % 2 != 0:
             if number % 2 == 0:
                 p1_score += 1
@@ -93,7 +94,7 @@ class Graph:
 
     # Method to generate the graph starting from a given number
     def generate_graph(self, startNum, p1_score, p2_score):
-        max_level = 5
+        max_level = 4
         max_num = 1000
         # Create the root node and add it to the queue
         self.nodes[self.nodeID] = GraphNode(self.nodeID, startNum, 0, p1_score, p2_score)
