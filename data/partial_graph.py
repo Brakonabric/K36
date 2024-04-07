@@ -25,7 +25,7 @@ class Graph:
     # Graph constructor
     def __init__(self):
         self.nodeID = 0 
-        self.nodes = {}  # Dictionary to store nodes
+        self.nodes = {}  # Virsotnes vārdnīca 
         self.levelSet = {
             0: set() #glāba virsotnes un virsotņu kopas
         }
