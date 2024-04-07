@@ -4,12 +4,12 @@ from queue import Queue
 class GraphNode:
     # GraphNode constructor
     def __init__(self, node_id, number, level, p1_score, p2_score):
-        self.id = node_id # katrai virsotnei
+        self.id = node_id # identifikators katrai virsotnei
         self.number = number # skaitli virsotnei
         self.level = level # līmenis katrai virsotnei
         self.p1_score = p1_score # pirmā spēlētāja punkti
         self.p2_score = p2_score # otrā spēlētāja punkti
-        self.ChildNodes = []  # List to store child nodes
+        self.ChildNodes = []  # Saraksts virsotnes glabāšanai (bērni)
         self.hashValue = str(p1_score) + str(number) + str(p2_score)
         self.eval = None
         self.visited_nodes = 0
@@ -17,17 +17,17 @@ class GraphNode:
 
 class SetNode:
     def __init__(self, node_id, hashValue):
-        self.id = node_id
-        self.hashValue = hashValue
+        self.id = node_id # identifikacijas numuru pievienošana
+        self.hashValue = hashValue # hešvērtības pievienošana
 
 
 class Graph:
     # Graph constructor
     def __init__(self):
-        self.nodeID = 0
+        self.nodeID = 0 
         self.nodes = {}  # Dictionary to store nodes
         self.levelSet = {
-            0: set()
+            0: set() #glāba virsotnes un virsotņu kopas
         }
         self.visited_nodes_count = 0
         self.found_existing_node = False
@@ -37,13 +37,12 @@ class Graph:
         result = str(graph_node.p1_score) + str(graph_node.number) + str(graph_node.p2_score)
         return result
 
-    # Method to delete all nodes from the graph
+    # Metode visu mezglu dzēšanai
     def delete_graph(self):
         for key, value in self.nodes.items():
             del self.nodes[key]
 
-    # Method to add a node to the graph
-
+    # Metode, lai pievienotu jaunu virsotni
     def add_node(self, number, level, p1_score, p2_score, parentID):
         self.found_existing_node = False
         if level % 2 != 0:
