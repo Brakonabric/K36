@@ -103,14 +103,14 @@ class Graph:
         n_queue = Queue()
         n_queue.put(self.nodes[self.nodeID])
 
-        # Iterate until the queue is empty
+        # Atkārtojiet, kamēr rinda nav tukša
         while not n_queue.empty():
             curr_node = n_queue.get()
-            # If the current node's number is less than max_num, generate child nodes
 
+            # Ja virsotnes numurs ir mazāks par max_num, ģenerējiet bērnu virsotni
             if curr_node.level < max_level and curr_node.number < max_num:
-                # Generate child nodes with different properties
-
+                
+                # Ģenerējiet bērnu visrsotni
                 if self.add_node(curr_node.number * 2, curr_node.level + 1, curr_node.p1_score, curr_node.p2_score,
                                  curr_node.id):
                     n_queue.put(self.nodes[self.nodeID])
