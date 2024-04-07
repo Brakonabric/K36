@@ -121,14 +121,14 @@ class Graph:
 
     def minimax_eval(self, node, maximizingPlayer): #rekursīva funkcija, kas pēc minimaksa algoritma katrai virsotnei piešķir heiristisko vertējumu
         self.visited_nodes_count += 1 #izseko cik virsotnes bija apmeklētas
-        if not node.ChildNodes: #ja virsotnei nav bērnu(lapas virsotne), tad funkcija atgriež šīs virsotnes heiristisko vērtējumu
+        if not node.ChildNodes: #ja virsotnei nav bērnu(strupceļa virsotne), tad funkcija atgriež šīs virsotnes heiristisko vērtējumu
             return node.eval
 
         if maximizingPlayer: #ja spēlētājs, kuram jāizdara gājiens, ir maksimizējošais spēlētājs(virsotne atrodas Max līmenī)
             max_eval = float('-inf') #minimāli iespējamā vērtība
             #funkcija izvēlas maksimālo vērtību no pieejamajiem bērnu virsotnēm un atgriež šo vērtību
             for child_node in node.ChildNodes:
-                child_node.eval = self.minimax_eval(child_node, False) #ja virsone nav lapas virsotne, uz to bērniem tiek pielietots minimaks, pieņēmot, ka tie atrodas Min līmenī
+                child_node.eval = self.minimax_eval(child_node, False) #ja virsone nav strupceļa virsotne, uz to bērniem tiek pielietots minimaks, pieņēmot, ka tie atrodas Min līmenī
                 max_eval = max(max_eval, child_node.eval)
             node.eval = max_eval
             return max_eval
@@ -136,29 +136,29 @@ class Graph:
             min_eval = float('inf') #maksimāli iespējamā vērtība
             # funkcija izvēlas minimālo vērtību no pieejamajiem bērnu virsotnēm un atgriež šo vērtību
             for child_node in node.ChildNodes:
-                child_node.eval = self.minimax_eval(child_node, True) #ja virsone nav lapas virsotne, uz to bērniem tiek pielietots minimaks, pieņēmot, ka tie atrodas Max līmenī
+                child_node.eval = self.minimax_eval(child_node, True) #ja virsone nav strupceļa virsotne, uz to bērniem tiek pielietots minimaks, pieņēmot, ka tie atrodas Max līmenī
                 min_eval = min(min_eval, child_node.eval)
             node.eval = min_eval
             return min_eval
 
-    def heuristic(self): # visiem lapas virsotnēm piešķir heiristisko vērtējumu, kas ir vienāda ar 2. un 1. spēlētāja punktu starpību
+    def heuristic(self): # visiem strupceļa virsotnēm piešķir heiristisko vērtējumu, kas ir vienāda ar 2. un 1. spēlētāja punktu starpību
         for key, value in self.nodes.items():
             if not value.ChildNodes:
                 value.eval = value.p2_score - value.p1_score
 
     def alfa_beta_eval(self, node, alpha, beta, maximizingPlayer): #rekursīva funkcija, kas pēc alfa-beta algoritma katrai virsotnei piešķir heiristisko vertējumu
         self.visited_nodes_count += 1 #izseko cik virsotnes bija apmeklētas
-        if not node.ChildNodes: #ja ir sasniegta lapas virsotne, funkcija atgriež tās heiristisko vertējumu
+        if not node.ChildNodes: #ja ir sasniegta strupceļa virsotne, funkcija atgriež tās heiristisko vertējumu
             return node.eval
 
         if maximizingPlayer: #ja spēlētājs, kuram jāizdara gājiens, ir maksimizējošais spēlētājs(virsotne atrodas Max līmenī)
             max_eval = float('-inf')#minimāli iespējamā vērtība
             # funkcija izvēlas maksimālo vērtību no pieejamajiem bērnu virsotnēm un atgriež šo vērtību
             for child_node in node.ChildNodes:
-                child_eval = self.alfa_beta_eval(child_node, alpha, beta, False) #ja virsone nav lapas virsotne, uz to bērniem tiek pielietota alfa-beta, pieņēmot, ka tie atrodas Min līmenī
+                child_eval = self.alfa_beta_eval(child_node, alpha, beta, False) #ja virsone nav strupceļa virsotne, uz to bērniem tiek pielietota alfa-beta, pieņēmot, ka tie atrodas Min līmenī
                 max_eval = max(max_eval, child_eval)
                 alpha = max(alpha, max_eval) # labākā (lielākā) vērtība, ko maksimizējošais spēlētājs varētu sasniegt šajā līmenī
-                #ja kāds bērnu mezgls sasniedz vērtību, kas lielāka par alfa vērtību, tad alfa vērtība tiek atjaunināta uz šo lielāko vērtību
+                #ja kāda bērnu virsotne sasniedz vērtību, kas lielāka par alfa vērtību, tad alfa vērtība tiek atjaunināta uz šo lielāko vērtību
 
                 #  ja kāda bērnu virsotne sasniedz vērtību, kas ir lielāka par beta vērtību, tad zemākās līmeņa virsotnes, kas nav jau pārbaudītas, netiek izpētītas, jo tie neietekmēs gājiena izvēli, tāpēc tiek pārtraukta turpmāka izpēte šajā virzienā
                 if beta <= alpha:
@@ -169,10 +169,11 @@ class Graph:
             min_eval = float('inf') #maksimāli iespējamā vērtība
             #funkcija izvēlas minimālo vērtību no pieejamajiem bērnu virsotnēm un atgriež šo vērtību
             for child_node in node.ChildNodes: 
-                child_eval = self.alfa_beta_eval(child_node, alpha, beta, True) #ja virsone nav lapas virsotne, uz to bērniem tiek pielietota alfa-beta, pieņēmot, ka tie atrodas Max līmenī
+                child_eval = self.alfa_beta_eval(child_node, alpha, beta, True) #ja virsone nav strupceļa virsotne, uz to bērniem tiek pielietota alfa-beta, pieņēmot, ka tie atrodas Max līmenī
                 min_eval = min(min_eval, child_eval)
                 beta = min(beta, min_eval) #labākā (mazākā) vērtība, ko minimizējošais spēlētājs varētu sasniegt šajā līmenī
                 #ja kāda bērnu virsotne sasniedz vērtību, kas mazāka par beta vērtību, tad beta vērtība tiek atjaunināta uz šo mazāko vērtību
+                
                 #ja kāda bērnu virsotne sasniedz vērtību, kas ir lielāka par beta vērtību, tad zemākās līmeņa virsotnes, kas nav jau pārbaudītas, netiek izpētītas, jo tie neietekmēs gājiena izvēli, tāpēc tiek pārtraukta turpmāka izpēte šajā virzienā
                 if beta <= alpha:
                     break
@@ -190,7 +191,7 @@ class Graph:
 def minimax(startNum, p1_score, p2_score): #funkciija, kas izpilda alfa-beta algoritmu un izpilda gājienu
     graph = Graph()
     graph.generate_graph(startNum, p1_score, p2_score) #funkcija ģenerē grāfa daļu no uzdotas virsotnes
-    graph.heuristic() #funkcija piešķir lapas virsotnem heiristiskus vertējumus
+    graph.heuristic() #funkcija piešķir strupceļa virsotnem heiristiskus vertējumus
     graph.minimax_eval(graph.nodes[0], True) #funkcija pēc minimaksa algoritma katrai virsotnei piešķir heiristiskus vertējumus
     graph.print_nodes() #izvada virsotnes konsolī
     best_child = graph.choose_best_child() #funkcija izvēlas nākamo gajiēnu kā virsotni ar lielāko heiristisko vērtējumu
@@ -201,7 +202,7 @@ def minimax(startNum, p1_score, p2_score): #funkciija, kas izpilda alfa-beta alg
 def alphabeta(startNum, p1_score, p2_score): #funkciija, kas izpilda alfa-beta algoritmu un izpilda gājienu
     graph = Graph()
     graph.generate_graph(startNum, p1_score, p2_score) #funkcija ģenerē grāfa daļu no uzdotas virsotnes
-    graph.heuristic() #funkcija piešķir lapas virsotnem heiristiskus vertējumus
+    graph.heuristic() #funkcija piešķir strupceļa virsotnem heiristiskus vertējumus
     graph.alfa_beta_eval(graph.nodes[0], float('-inf'), float('inf'), True) #funkcija pēc alfa-beta algoritma katrai virsotnei piešķir heiristiskus vertējumus
     graph.print_nodes() #izvada virsotnes konsolī
     best_child = graph.choose_best_child() #funkcija izvēlas nākamo gajiēnu kā virsotni ar lielāko heiristisko vērtējumu
