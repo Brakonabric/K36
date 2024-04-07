@@ -4,11 +4,11 @@ from queue import Queue
 class GraphNode:
     # GraphNode constructor
     def __init__(self, node_id, number, level, p1_score, p2_score):
-        self.id = node_id
-        self.number = number
-        self.level = level
-        self.p1_score = p1_score
-        self.p2_score = p2_score
+        self.id = node_id # katrai virsotnei
+        self.number = number # skaitli virsotnei
+        self.level = level # līmenis katrai virsotnei
+        self.p1_score = p1_score # pirmā spēlētāja punkti
+        self.p2_score = p2_score # otrā spēlētāja punkti
         self.ChildNodes = []  # List to store child nodes
         self.hashValue = str(p1_score) + str(number) + str(p2_score)
         self.eval = None
