@@ -24,7 +24,7 @@ class SetNode:
 class Graph:
     # Graph constructor
     def __init__(self):
-        self.nodeID = 0 
+        self.nodeID = 0
         self.nodes = {}  # Virsotnes vārdnīca 
         self.levelSet = {
             0: set() #glāba virsotnes un virsotņu kopas
@@ -94,9 +94,9 @@ class Graph:
 
     # Metode, lai ģenerētu grafu
     def generate_graph(self, startNum, p1_score, p2_score):
-        max_level = 4 
+        max_level = 4
         max_num = 1000 # skaitlis, kur beidzas spēle
-        # Izveidojiet virostni un pievienojiet to rindai
+        # Izveidojiet virostni un pievienojiet rindai
         self.nodes[self.nodeID] = GraphNode(self.nodeID, startNum, 0, p1_score, p2_score)
         self.levelSet[0].add(SetNode(self.nodes[0].id, self.generate_set_value(self.nodes[0])))
 
