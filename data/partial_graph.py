@@ -75,15 +75,16 @@ class Graph:
 
             return True
 
-    # Method to add an edge between two nodes in the graph
+    # Metode, lai pievienotu saiti starp diviem virsotnem
     def add_edge(self, srcID, endID):
-        # Add endID node to the ChildNodes list of srcID node
+        # Pievienojiet endID virsotni srcID virsotnes ChildNodes sarakstam
+
         self.nodes[srcID].ChildNodes.append(self.nodes[endID])
 
-    # Method to print all nodes in the graph
+    # metode, kas printē visas virsotnes ekrānā
     def print_nodes(self):
         print("root")
-        # Iterate over nodes and print their properties and child nodes
+        # Printēt virsotnes ar vērtībām 
         for key, value in self.nodes.items():
             print("(", value.id, " ", value.p1_score, value.number, value.p2_score, value.eval, ")")
             for nodes in value.ChildNodes:
@@ -91,11 +92,11 @@ class Graph:
             print("")
             print("")
 
-    # Method to generate the graph starting from a given number
+    # Metode, lai ģenerētu grafu
     def generate_graph(self, startNum, p1_score, p2_score):
-        max_level = 4
-        max_num = 1000
-        # Create the root node and add it to the queue
+        max_level = 4 
+        max_num = 1000 # skaitlis, kur beidzas spēle
+        # Izveidojiet virostni un pievienojiet to rindai
         self.nodes[self.nodeID] = GraphNode(self.nodeID, startNum, 0, p1_score, p2_score)
         self.levelSet[0].add(SetNode(self.nodes[0].id, self.generate_set_value(self.nodes[0])))
 
