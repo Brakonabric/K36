@@ -1,14 +1,15 @@
+
 from tkinter import *
 from assets.sounds import Sounds
 from data.play_game import Game
 from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
 
-
 # Функция закрытия приложения
 def on_click_exit():
     # Уничтожение главного окна, это вызовет выключение приложения без ошибок.
     root.destroy()
+
 
 
 # Функция для изменения иконки звука
