@@ -94,7 +94,7 @@ class Graph:
 
     # Metode, lai ģenerētu grafu
     def generate_graph(self, startNum, p1_score, p2_score):
-        max_level = 4
+        max_level = 5
         max_num = 1000 # skaitlis, kur beidzas spēle
         # Izveidojiet virostni un pievienojiet rindai
         self.nodes[self.nodeID] = GraphNode(self.nodeID, startNum, 0, p1_score, p2_score)
