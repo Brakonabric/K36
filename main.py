@@ -5,13 +5,13 @@ from data.player import WhoPlayFirst
 from data.alg import UsingAlgorithm
 
 
-# Функция закрытия приложения
+# Сlose function
 def on_click_exit():
-    # Уничтожение главного окна, это вызовет выключение приложения без ошибок.
+    # Eliminating the main window will not cause any errors.
     root.destroy()
 
 
-# Функция для изменения иконки звука
+# Changing the sound icon
 def volume_img(volume_button, mode):
     mute = background_music.get_mute_flag()
     if mode == "DARK":
@@ -26,56 +26,56 @@ def volume_img(volume_button, mode):
             volume_button.config(image=Assets.unmute)
 
 
-# Функция вкл/выкл мелодии
+# Melody on/off function
 def volume_switch():
     background_music.switch_mute_mode()
 
 
-# Функция отображения окна "О программе"
+# "About" window
 def about(src):
-    # Внутренняя функция для закрытия окна "О программе"
+    # Internal function to close the "About" window
     def close_rules():
-        # Уничтожение кнопки
+        # Eliminating the button
         rules_fake_button.destroy()
 
-    # Функция отображения авторов
+    # Display authors 
     def authors():
-        # Уничтожение кнопки
+        # Eliminating the button
         about_fake_button.destroy()
-        # Размещение полноэкранной кнопки на экране
+        # Full-screen button on the screen
         author_fake_button.place(x=-1.5, y=-1.5)
 
-    # Внутренняя функция для закрытия окна "авторы"
+    # Internal function to close the "authors" window
     def close_authors():
-        # Уничтожение кнопки
+        # Eliminating the button
         author_fake_button.destroy()
 
-    # Создание полноэкранной кнопки для отображения окна "авторы"
+    # Full-screen button the "authors" window
     author_fake_button = Button(root, width=800, height=600, image=Assets.authors_img,
                                 command=lambda: {Sounds.button_click(), close_authors()},
                                 border=0,
                                 relief='sunken')
 
-    # Создание полноэкранной кнопки для отображения окна "О программе"
+    # Full-screen button the "about" window
     about_fake_button = Button(root, width=800, height=600, image=Assets.about_game_img,
                                command=lambda: {Sounds.button_click(), authors()},
                                border=0,
                                relief='sunken')
-    # Создание полноэкранной кнопки для отображения окна "Правила игры"
+    # Full-screen button the "rules" window
     rules_fake_button = Button(root, width=800, height=600, image=Assets.about_rules_img,
                                command=lambda: {Sounds.button_click(), close_rules()},
                                border=0,
                                relief='sunken')
-    # Проверка источника вызова функции
+    # Check function call source
     if src == "MAIN":
-        # Размещение полноэкранной кнопки на экране
+        # Full-screen button
         about_fake_button.place(x=-1.5, y=-1.5)
     else:
-        # Размещение полноэкранной кнопки на экране
+        # Full-screen button
         rules_fake_button.place(x=-1.5, y=-1.5)
 
 
-# Функция отображения окна игры
+# Display game window
 def game_menu(turn, alg, start_score):
     # Воспроизвести звук перехода
     Sounds.play_fx("transition")
